@@ -1,0 +1,25 @@
+{
+    "name": "lukaswhite/php-feed-writer",
+    "description": "A PHP library for writing feeds; e.g. RSS",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lukaswhite",
+            "email": "hello@lukaswhite.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.0",
+        "phpunit/php-code-coverage": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lukaswhite\\FeedWriter\\": "src/",
+            "Lukaswhite\\FeedWriter\\Tests\\": "tests/"
+        }
+    }
+}
