@@ -27,21 +27,19 @@ class ItunesTest extends TestCase
             ->ttl( 60 )
             ->lastBuildDate( new \DateTime( '2016-03-10 02:00' ) );
 
-        $item1 = $channel->addItem( );
-
-        $item1->title( 'Shake Shake Shake Your Spices' )
+        $channel->addItem( )
+            ->title( 'Shake Shake Shake Your Spices' )
             ->author( 'John Doe' )
             ->subtitle( 'A short primer on table spices' )
             ->duration( '07:04' )
             ->summary( 'This week we talk about <a href="https://itunes/apple.com/us/book/antique-trader-salt-pepper/id429691295?mt=11">salt and pepper shakers</a>, comparing and contrasting pour rates, construction materials, and overall aesthetics. Come and join the party!' )
             ->pubDate( new \DateTime( '2016-03-08 12:00' ) )
             ->guid( 'http://example.com/podcasts/archive/aae20140615.m4a' )
-            ->explicit( 'no' );
-
-        $enclosure = $item1->addEnclosure( );
-        $enclosure->url( 'http://example.com/podcasts/everything/AllAboutEverythingEpisode3.m4a' )
-            ->length( 8727310 )
-            ->type( 'audio/x-m4a' );
+            ->explicit( 'no' )
+            ->addEnclosure( )
+                ->url( 'http://example.com/podcasts/everything/AllAboutEverythingEpisode3.m4a' )
+                ->length( 8727310 )
+                ->type( 'audio/x-m4a' );
 
 
         $item2 = $channel->addItem( );
