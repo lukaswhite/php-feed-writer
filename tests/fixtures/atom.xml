@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="plain">Example Feed</title>
-  <subtitle>An Example</subtitle>
+  <subtitle type="plain">An Example</subtitle>
   <link>http://example.org/</link>
   <updated>2003-12-13T18:30:02+00:00</updated>
   <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
@@ -23,9 +23,8 @@
   <generator uri="https://github.com/lukaswhite/php-feed-writer" version="1.0">PHP Feed Writer</generator>
   <entry>
     <title>Atom-Powered Robots Run Amok</title>
-    <link href="http://example.org/2003/12/13/atom03"/>
+    <link href="http://example.org/2003/12/13/atom03" language="en-GB" length="10000"/>
     <updated>2003-12-13T18:30:02+00:00</updated>
-    <published>2003-12-11T18:30:02+00:00</published>
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
     <author>
       <name>John Doe</name>
@@ -37,13 +36,19 @@
       <email>jane@doe.com</email>
       <uri>http://doe.com/jane</uri>
     </contributor>
+    <contributor>
+      <name>John Doe</name>
+      <email>john@doe.com</email>
+      <uri>http://doe.com/john</uri>
+    </contributor>
+    <published>2003-12-11T18:30:02+00:00</published>
     <summary>robots and stuff</summary>
     <content type="html"><![CDATA[<h1>Atom-Powered Robots Run Amok</h1><p>content here</p>]]></content>
-    <category term="example" scheme="http://example.com/categories/" label="An example"/>
     <source>
       <id>http://example.org/</id>
       <title>Example, Inc.</title>
       <updated>2003-12-13T18:30:02+00:00</updated>
     </source>
+    <category term="example" scheme="http://example.com/categories/" label="An example"/>
   </entry>
 </feed>

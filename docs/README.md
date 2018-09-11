@@ -743,8 +743,21 @@ $entry->addSource( )
 	->title( 'Example, Inc.' )
 	->updated( new \DateTime( '2003-12-13T18:30:02Z' ) );
 ```
+
+### Adding Enclosures to Atom Entries
+
+To add an enclosure to an Atom entry:
+
+```php
+$entry->addEnclosure( )
+	->url( 'http://example.com/audio.mp3' )
+	->length( 1000 )
+	->type( 'audio/mpeg' );
+```
+
+Unlike RSS, where enclosures are presented by elements, in Atom an enclosure is actually a `<link>` that points to the fie in question, but with the `rel` attribute set to `enclosure`.	
 		
-## Feed Namespaces
+### Feed Namespaces
 
 Namespaces work in exactly the same way as RSS, except that the default namespace for an Atom feed is set to `http://www.w3.org/2005/Atom`.
 

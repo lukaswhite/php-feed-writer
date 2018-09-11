@@ -12,7 +12,7 @@ class AtomTest extends TestCase
         $feed->prettyPrint( );
 
         $feed->title( 'Example Feed', 'plain' )
-            ->subtitle( 'An Example' )
+            ->subtitle( 'An Example', 'plain' )
             ->link( 'http://example.org/' )
             ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
             ->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' )
@@ -62,6 +62,11 @@ class AtomTest extends TestCase
             ->email( 'jane@doe.com' )
             ->uri( 'http://doe.com/jane' );
 
+        $entry->addContributor( )
+            ->name( 'John Doe' )
+            ->email( 'john@doe.com' )
+            ->uri( 'http://doe.com/john' );
+
         $entry->addCategory( )
             ->term( 'example' )
             ->scheme( 'http://example.com/categories/')
@@ -69,12 +74,16 @@ class AtomTest extends TestCase
 
         $entry
             ->addLink( )
-                ->url( 'http://example.org/2003/12/13/atom03' );
+                ->url( 'http://example.org/2003/12/13/atom03' )
+                ->language( 'en-GB' )
+                ->length( 10000 );
 
         $entry->addSource( )
             ->id( 'http://example.org/' )
             ->title( 'Example, Inc.' )
             ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) );
+
+
 
         //print $feed->toString( );
        // $this->assertTrue( is_string( $feed->toString( ) ) );
@@ -124,6 +133,32 @@ class AtomTest extends TestCase
         //$title = $xpath->query( '//feed/title' )[ 0 ];
         //$this->assertEquals( 'html', $title->getAttribute( 'type' ) );
     }**/
+
+    public function testAddingEnclosure( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\Atom( );
+
+        $feed->title( 'Example Feed', 'plain' )
+            ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
+            ->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' );
+
+        $entry = $feed->addEntry( )
+            ->title( 'Atom-Powered Robots Run Amok' )
+            ->id( 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a' )
+            ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) );
+
+        $entry->addEnclosure( )
+            ->url( 'http://example.com/audio.mp3' )
+            ->length( 1000 )
+            ->type( 'audio/mpeg' );
+
+        $this->assertTrue(
+            strpos(
+                $feed->toString( ),
+                '<link href="http://example.com/audio.mp3" rel="enclosure" type="audio/mpeg" length="1000"'
+            ) > -1
+        );
+    }
 
     public function testAddingCustomElements( )
     {

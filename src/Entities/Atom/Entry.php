@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities\Atom;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
+use Lukaswhite\FeedWriter\Entities\Atom\Enclosure;
 use Lukaswhite\FeedWriter\Traits\Atom\HasAuthors;
 use Lukaswhite\FeedWriter\Traits\Atom\HasCategories;
 use Lukaswhite\FeedWriter\Traits\Atom\HasContributors;
@@ -57,6 +58,13 @@ class Entry extends Entity
      * @var Source
      */
     protected $source;
+
+    /**
+     * Any enclosures attached to the entry
+     *
+     * @var array
+     */
+    protected $enclosures = [ ];
 
     /**
      * Set the content
@@ -128,6 +136,33 @@ class Entry extends Entity
     }
 
     /**
+     * Add an enclosure
+     *
+     * @return Enclosure
+     */
+    public function addEnclosure( ) : Enclosure
+    {
+        $enclosure = new Enclosure( $this->feed );
+        $this->enclosures[ ] = $enclosure;
+        return $enclosure;
+    }
+
+    /**
+     * Convert the enclosures to links; i.e. links where the rel is set to "enclosure",
+     * that point to the URL of the enclosure file.
+     *
+     * @return void
+     */
+    protected function convertEnclosuresToLinks( ) : void
+    {
+        if ( count( $this->enclosures ) ) {
+            foreach( $this->enclosures as $enclosure ) {
+                $this->links[ ] = $enclosure->toLink( );
+            }
+        }
+    }
+
+    /**
      * Create a DOM element that represents this entity.
      *
      * @return \DOMElement
@@ -137,6 +172,8 @@ class Entry extends Entity
         $entry = $this->createElement( 'entry' );
 
         $this->addTitleElement( $entry );
+
+        $this->convertEnclosuresToLinks( );
 
         $this->addLinkElements( $entry );
 

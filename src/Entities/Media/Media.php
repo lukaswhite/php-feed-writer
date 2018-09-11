@@ -182,6 +182,13 @@ class Media extends Entity
     protected $restrictions = [ ];
 
     /**
+     * The prices
+     *
+     * @var array
+     */
+    protected $prices = [ ];
+
+    /**
      * Convert this entity into an XML element
      *
      * @return \DOMElement
@@ -307,6 +314,13 @@ class Media extends Entity
             foreach( $this->restrictions as $restriction ) {
                 /** @var Restriction $restriction */
                 $media->appendChild( $restriction->element( ) );
+            }
+        }
+
+        if ( count( $this->prices ) ) {
+            foreach( $this->prices as $price ) {
+                /** @var Price $price */
+                $media->appendChild( $price->element( ) );
             }
         }
 
@@ -560,6 +574,18 @@ class Media extends Entity
         $restriction = new Restriction( $this->feed );
         $this->restrictions[ ] = $restriction;
         return $restriction;
+    }
+
+    /**
+     * Add a price
+     *
+     * @return Price
+     */
+    public function addPrice( ) : Price
+    {
+        $price = new Price( $this->feed );
+        $this->prices[ ] = $price;
+        return $price;
     }
 
 }

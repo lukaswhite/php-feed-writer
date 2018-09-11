@@ -21,5 +21,8 @@
             "Lukaswhite\\FeedWriter\\": "src/",
             "Lukaswhite\\FeedWriter\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

@@ -4,6 +4,7 @@ namespace Lukaswhite\FeedWriter\Tests;
 
 use Lukaswhite\FeedWriter\Entities\Media\Credit;
 use Lukaswhite\FeedWriter\Entities\Media\Media;
+use Lukaswhite\FeedWriter\Entities\Media\Price;
 use Lukaswhite\FeedWriter\RSS2;
 use Lukaswhite\RSSWriter\Feed;
 
@@ -86,6 +87,12 @@ class MediaTest extends TestCase
             ->language( 'en' )
             ->start( '00:00:10.000' )
             ->end( '00:00:17.000' );
+
+        $media->addPrice( )
+            ->price( 19.99 )
+            ->type( Price::PACKAGE )
+            ->info( 'http://www.dummy.jp/package_info.html' )
+            ->currency( 'EUR' );
 
         $media->addRestriction( )->allow( )->byCountry( 'au' );
         $media->addRestriction( )->onSharing( )->deny( );
@@ -235,6 +242,20 @@ class MediaTest extends TestCase
         $this->assertArrayHasKey( 'type', $thirdRestrictionAttributes );
         $this->assertEquals( 'uri', $thirdRestrictionAttributes[ 'type' ] );
 
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/media:content/media:price' )->length );
+
+        $priceAttributes = $this->getAttributesOfElement(
+            $xpath->query( '/rss/channel/item[1]/media:content/media:price' )[ 0 ]
+        );
+
+        $this->assertArrayHasKey( 'price', $priceAttributes );
+        $this->assertEquals( '19.99', $priceAttributes[ 'price' ] );
+        $this->assertArrayHasKey( 'info', $priceAttributes );
+        $this->assertEquals( 'http://www.dummy.jp/package_info.html', $priceAttributes[ 'info' ] );
+        $this->assertArrayHasKey( 'type', $priceAttributes );
+        $this->assertEquals( 'package', $priceAttributes[ 'type' ] );
+        $this->assertArrayHasKey( 'currency', $priceAttributes );
+        $this->assertEquals( 'EUR', $priceAttributes[ 'currency' ] );
 
         //print( $feed->build( )->saveXML( ) );
 

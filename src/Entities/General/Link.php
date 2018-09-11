@@ -15,7 +15,7 @@ class Link extends Entity
      *
      * @var string
      */
-    protected $tagName;
+    protected $tagName = 'link';
 
     /**
      * The URL
@@ -66,6 +66,12 @@ class Link extends Entity
         }
         if ( $this->type ) {
             $el->setAttribute( 'type', $this->type );
+        }
+        if ( $this->language ) {
+            $el->setAttribute( 'language', $this->language );
+        }
+        if ( $this->length ) {
+            $el->setAttribute( 'length', $this->length );
         }
         return $el;
     }
@@ -132,7 +138,7 @@ class Link extends Entity
      * @param int $length
      * @return Link
      */
-    public function length( integer $length ) : self
+    public function length( int $length ) : self
     {
         $this->length = $length;
         return $this;
