@@ -109,4 +109,4 @@ composer require lukaswhite\php-feed-writer
 
 ## Documentation
 
-Full documentation [can be found here](https://lukaswhite.github.io/php-feed-writer/#/?id=installation).
+Full documentation [can be found here](https://lukaswhite.github.io/php-feed-writer).
