@@ -1,6 +1,6 @@
 # Feed Writer
 
-<img src="/assets/php-feed-writer.svg" width="120px" alt="PHP Feed Writer">
+<img src="https://lukaswhite.github.io/php-feed-writer/assets/php-feed-writer.svg" width="120px" alt="PHP Feed Writer">
 
 A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes.
 
