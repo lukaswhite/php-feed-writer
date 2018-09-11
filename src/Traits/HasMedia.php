@@ -4,6 +4,7 @@ namespace Lukaswhite\FeedWriter\Traits;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\Media\Media;
+use Lukaswhite\FeedWriter\Feed;
 
 /**
  * Trait HasTitleAndDescription

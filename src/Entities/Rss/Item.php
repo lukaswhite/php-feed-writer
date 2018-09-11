@@ -4,11 +4,13 @@ namespace Lukaswhite\FeedWriter\Entities\Rss;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\General\Enclosure;
+use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
 use Lukaswhite\FeedWriter\Traits\HasLink;
 use Lukaswhite\FeedWriter\Traits\HasMedia;
 use Lukaswhite\FeedWriter\Traits\HasMediaGroups;
 use Lukaswhite\FeedWriter\Traits\HasPublishedDate;
-use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
+use Lukaswhite\FeedWriter\Traits\HasTitle;
+use Lukaswhite\FeedWriter\Traits\HasDescription;
 
 /**
  * Class Item
@@ -17,11 +19,13 @@ use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
  */
 class Item extends Entity
 {
-    use HasTitleAndDescription,
+    use HasTitle,
+        HasDescription,
         HasLink,
         HasPublishedDate,
         HasMedia,
-        HasMediaGroups;
+        HasMediaGroups,
+        HasGeoRSS;
 
     /**
      * The GUID (globally unique identifier)
@@ -79,7 +83,8 @@ class Item extends Entity
     {
         $item = $this->feed->getDocument( )->createElement( 'item' );
 
-        $this->addTitleAndDescriptionElements( $item );
+        $this->addTitleElement( $item );
+        $this->addDescriptionElement( $item );
 
         $this->addLinkElement( $item );
 
@@ -101,6 +106,13 @@ class Item extends Entity
 
         $this->addMediaElements( $item );
         $this->addMediaGroupElements( $item );
+
+        $this->addElementsToDOMElement( $item );
+
+        // Optionally add the GeoRSS tags
+        if ( $this->geoRSS ) {
+            $this->geoRSS->addTags( $item );
+        }
 
         return $item;
     }

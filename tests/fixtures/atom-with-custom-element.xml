@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:foo="http://foo.com"><title type="plain">Example Feed</title><subtitle>An Example</subtitle><link>http://example.org/</link><updated>2003-12-13T18:30:02+00:00</updated><id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id><rights type="html"><![CDATA[&amp;copy; 2005 John Doe]]></rights><icon>http://example.org/icon.png</icon><logo>http://example.org/logo.png</logo><foo:bar x="1" y="2">just a test</foo:bar></feed>

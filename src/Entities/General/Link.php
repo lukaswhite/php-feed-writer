@@ -11,11 +11,11 @@ use Lukaswhite\FeedWriter\Entities\Entity;
 class Link extends Entity
 {
     /**
-     * The name of the link; e.g. atom:link
+     * The tag name of the link; e.g. link, atom:link
      *
      * @var string
      */
-    protected $name;
+    protected $tagName;
 
     /**
      * The URL
@@ -39,13 +39,27 @@ class Link extends Entity
     protected $type;
 
     /**
+     * The language of the referenced resource (i.e. the hreflang attribute)
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
+     * The length of the resource, in bytes
+     *
+     * @var int
+     */
+    protected $length;
+
+    /**
      * Create a DOM element that represents this entity.
      *
      * @return \DOMElement
      */
     public function element( ) : \DOMElement
     {
-        $el = $this->feed->getDocument( )->createElement( $this->name );
+        $el = $this->feed->getDocument( )->createElement( $this->tagName );
         $el->setAttribute( 'href', $this->url );
         if ( $this->rel ) {
             $el->setAttribute( 'rel', $this->rel );
@@ -59,12 +73,12 @@ class Link extends Entity
     /**
      * Set the name of the link; e.g. atom:link
      *
-     * @param string $name
+     * @param string $tagName
      * @return Link
      */
-    public function setName( string $name ) : self
+    public function tagName( string $tagName ) : self
     {
-        $this->name = $name;
+        $this->tagName = $tagName;
         return $this;
     }
 
@@ -74,7 +88,7 @@ class Link extends Entity
      * @param string $url
      * @return Link
      */
-    public function setUrl( string $url ) : self
+    public function url( string $url ) : self
     {
         $this->url = $url;
         return $this;
@@ -86,7 +100,7 @@ class Link extends Entity
      * @param string $rel
      * @return Link
      */
-    public function setRel( string $rel ) : self
+    public function rel( string $rel ) : self
     {
         $this->rel = $rel;
         return $this;
@@ -98,9 +112,31 @@ class Link extends Entity
      * @param string $type
      * @return Link
      */
-    public function setType( string $type ) : self
+    public function type( string $type ) : self
     {
         $this->type = $type;
         return $this;
     }
+
+    /**
+     * @param string $language
+     * @return Link
+     */
+    public function language( string $language ) : self
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * @param int $length
+     * @return Link
+     */
+    public function length( integer $length ) : self
+    {
+        $this->length = $length;
+        return $this;
+    }
+
+
 }

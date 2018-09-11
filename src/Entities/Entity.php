@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities;
 
 use Lukaswhite\FeedWriter\Feed;
+use Lukaswhite\FeedWriter\Traits\CreatesDOMElements;
 
 /**
  * Class Entity
@@ -11,12 +12,21 @@ use Lukaswhite\FeedWriter\Feed;
  */
 abstract class Entity
 {
+    use CreatesDOMElements;
+
     /**
      * The feed that this entity belongs to.
      *
      * @var Feed
      */
     protected $feed;
+
+    /**
+     * Any custom elements
+     *
+     * @var array
+     */
+    protected $elements = [ ];
 
     /**
      * Constructor
@@ -40,29 +50,40 @@ abstract class Entity
     }
 
     /**
+     * Add a custom element
+     *
+     * @param string $tagName
+     * @param string $content
+     * @param array $attributes
+     * @return Element
+     */
+    public function addElement( string $tagName, $content = null, $attributes = [ ] )
+    {
+        $element = new Element( $this->feed, $tagName, $content, $attributes );
+        $this->elements[ ] = $element;
+        return $element;
+    }
+
+    /**
+     * Add any custom elements to the provided DOMElement
+     *
+     * @param \DOMElement $el
+     */
+    protected function addElementsToDOMElement( \DOMElement $el )
+    {
+        if ( count( $this->elements ) ) {
+            foreach( $this->elements as $element ) {
+                /** @var Element $element */
+                $el->appendChild( $element->element( ) );
+            }
+        }
+    }
+
+    /**
      * Create a DOM element that represents this entity.
      *
      * @return \DOMElement
      */
     abstract public function element( ) : \DOMElement;
 
-    /**
-     * Create an element
-     *
-     * @param \DOMDocument $doc
-     * @param string $name
-     * @param mixed $value
-     * @param array $attributes
-     * @return \DOMElement
-     */
-    protected function createElement( string $name, $value = null, array $attributes = [ ] ) : \DOMElement
-    {
-        $el = $this->feed->getDocument( )->createElement( $name, $value );
-        if ( count( $attributes ) ) {
-            foreach( $attributes as $key => $value ) {
-                $el->setAttribute( $key, $value );
-            }
-        }
-        return $el;
-    }
 }

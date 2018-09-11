@@ -63,14 +63,7 @@ class RSS2 extends Feed
         $rss = $this->doc->createElement( 'rss' );
         $rss->setAttribute('version', '2.0');
 
-        foreach ( $this->namespaces as $prefix => $uri ) {
-            $rss->setAttributeNodeNS(
-                new \DomAttr(
-                    sprintf( 'xmlns:%s', $prefix ),
-                    $uri
-                )
-            );
-        }
+        $this->addNamespaces( $rss );
 
         if ( count( $this->channels ) ) {
             foreach( $this->channels as $channel ) {

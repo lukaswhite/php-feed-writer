@@ -5,7 +5,8 @@ namespace Lukaswhite\FeedWriter\Entities\General;
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Traits\HasDimensions;
 use Lukaswhite\FeedWriter\Traits\HasLink;
-use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
+use Lukaswhite\FeedWriter\Traits\HasTitle;
+use Lukaswhite\FeedWriter\Traits\HasDescription;
 use Lukaswhite\FeedWriter\Traits\HasUrl;
 
 /**
@@ -19,7 +20,8 @@ class Image extends Entity
 {
     use HasUrl,
         HasLink,
-        HasTitleAndDescription,
+        HasTitle,
+        HasDescription,
         HasDimensions;
 
     /**
@@ -34,7 +36,9 @@ class Image extends Entity
 
         $this->addUrlElement( $image );
 
-        $this->addTitleAndDescriptionElements( $image );
+        $this->addTitleElement( $image );
+
+        $this->addDescriptionElement( $image );
 
         $this->addLinkElement( $image );
 

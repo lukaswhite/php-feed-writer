@@ -3,11 +3,9 @@
 namespace Lukaswhite\FeedWriter\Entities\Rss;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
-use Lukaswhite\FeedWriter\Entities\General\Enclosure;
 use Lukaswhite\FeedWriter\Traits\HasLink;
-use Lukaswhite\FeedWriter\Traits\HasMedia;
-use Lukaswhite\FeedWriter\Traits\HasPublishedDate;
-use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
+use Lukaswhite\FeedWriter\Traits\HasTitle;
+use Lukaswhite\FeedWriter\Traits\HasDescription;
 
 /**
  * Class TextInput
@@ -16,7 +14,8 @@ use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
  */
 class TextInput extends Entity
 {
-    use HasTitleAndDescription,
+    use HasTitle,
+        HasDescription,
         HasLink;
 
     /**
@@ -45,9 +44,11 @@ class TextInput extends Entity
      */
     public function element( ) : \DOMElement
     {
-        $item = $this->feed->getDocument( )->createElement( 'textInput' );
+        $item = $this->createElement( 'textInput' );
 
-        $this->addTitleAndDescriptionElements( $item );
+        $this->addTitleElement( $item );
+
+        $this->addDescriptionElement( $item );
 
         $this->addLinkElement( $item );
 

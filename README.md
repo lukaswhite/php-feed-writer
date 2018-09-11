@@ -1,10 +1,23 @@
 # Feed Writer
 
-A PHP library for writing feeds. Currently supports RSS 2.0 and iTunes.
+A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes.
 
 > **Important** &mdash; This is a work in progress
 
-## Examples
+## Features
+
+* Lightning Fast
+* Modern &mdash; uses PHP7
+* Flexible; use it for syndication, media, podcasts...
+* Easy to extend
+* Supports custom namespaces
+* Full MediaRSS support
+* GeoRSS support
+* Supports XSL stylesheets
+* No third-party dependencies
+* Fully tested
+
+## Simple Examples
 
 ### RSS
 
@@ -29,6 +42,24 @@ foreach( $posts as $post ) {
 		->link( $post->url )
 		->pubDate( $post->publishedAt )
 		->guid( $post->url, true );
+}
+```
+
+### Atom
+
+```php
+$feed = new \Lukaswhite\FeedWriter\Atom( );
+
+$feed->title( 'Example Feed' )
+	->link( 'http://example.org/' )
+	->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
+	->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' );
+	
+foreach( $posts as $post ) {
+	$feed->addEntry( )
+		->title( $post->title )
+		->id( $post->id )
+		->updated( $post->updatedAt );
 }
 ```
 
@@ -68,18 +99,6 @@ $channel->addItem( )
         ->type( 'audio/x-m4a' );
 ```
 
-## Features
-
-* Lightning Fast
-* Modern &mdash; uses PHP7
-* Flexible; use it for syndication, media, podcasts...
-* Easy to extend
-* Supports custom namespaces
-* Full MediaRSS support
-* Supports XSL stylesheets
-* No third-party dependencies
-* Fully tested
-
 ## Installation
 
 This package requires PHP 7+.
@@ -90,7 +109,7 @@ Install the packae using [Composer](https://getcomposer.org/):
 composer require lukaswhite\php-feed-writer
 ```
 
-## Manual
+## RSS
 
 ### Creating a Feed
 
@@ -99,13 +118,13 @@ To create a feed:
 ```php
 use Lukaswhite\FeedWriter\Feed;
 
-$feed = new Feed( );
+$feed = new RSS2( );
 ```
 
 This creates a feed with the `utf-8` character encoding; to override that:
 
 ```php
-$feed = new Feed( 'iso-8859-1' );
+$feed = new RSS2( 'iso-8859-1' );
 ```
 
 #### Feed Namespaces
@@ -124,6 +143,7 @@ For convenience, the following common namespaces have their own corresponding me
 $feed->registerAtomNamespace( );
 $feed->registerMediaNamespace( );
 $feed->registerDublinCoreNamespace( );
+$feed->registerGeoRSSNamespace( );
 ```
 
 To check whether a namespace is registered:
@@ -161,6 +181,8 @@ $channel->title( 'My Blog' );
 ```php
 $channel->description( 'My personal blog' );
 ```
+
+If you want the description to be character encoded &mdash; i.e. wrapped in a `CDATA` section &mdash; then pass `true` as a second argument. If you don't, it will attempt to guess whether it should do so, by attempting to detect HTML in the provided description.
 
 #### Setting a Channel's Link
 
@@ -259,6 +281,21 @@ $this->addLink(
 );	
 ```
 
+#### Adding Images
+
+You can add an image to a channel by calling `addImage()`:
+
+```php
+->addImage( )
+	->url( 'http://example.com/image.jpeg' )
+	->link( 'http://example.com' )
+	->title( 'An example image')
+	->width( 200 )
+	->height( 150 );
+```
+
+> You can also add images using MediaRSS.	
+
 #### Other Channel Properties
 
 ```php
@@ -271,6 +308,66 @@ $channel->generator( 'PHP Feed Writer' )
 Now that your feed has a channel, it's time to start adding items.
 
 To add an item to the channel, call `addItem()`. This creates a new instance, attaches it to the feed and returns it. Like channels, the `Item` class has a fluent interface that you can use to set the appropriate properties.
+
+#### Setting the Item's title
+
+```php
+$channel->addItem( )
+	->title( 'A Blog Post' );
+```	
+
+#### Setting the Item's description
+
+```php
+$item->description( 'Just a post, on a blog' );
+```	
+
+> This behaves in the same way as the channel descripton with respect to character encoding; see the section on that for details.
+
+#### Setting the Item's Link
+
+```php
+$item->link( 'http://example.com/blog/post-1.html' )
+```	
+
+#### Setting the GUID of the Item
+
+```php
+$item->guid( 'http://example.com/blog/post-1.html' )
+```	
+
+If the GUID is a permalink, pass true as the second argument:
+
+```php
+$item$entry->guid( 'http://example.com/blog/post-1.html' )
+```	
+
+The result will be:
+
+```xml
+<guid isPermalink="true">http://example.com/blog/post-1.html</guid>
+```
+
+#### Setting Item's Published Date
+
+```php
+$item->pubDate( new \DateTime( '2018-09-07 09:30' ) );
+```
+
+#### Adding Enclosures
+
+To add an enclosure; for example a link to an item of audio:
+
+```php
+$item->addEnclosure( )
+	->url( 'http://example.com/audio.mp3' )
+	->length( 1000 )
+	->type( 'audio/mpeg' );
+```	
+
+#### Adding Media
+
+Please see the section on MediaRSS.
 
 
 

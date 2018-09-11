@@ -98,6 +98,13 @@ class Media extends Entity
     protected $title;
 
     /**
+     * The type of the title (plain or HTML)
+     *
+     * @var string
+     */
+    protected $titleType;
+
+    /**
      * A description of the item
      *
      * @var string
@@ -105,11 +112,25 @@ class Media extends Entity
     protected $description;
 
     /**
-     * The thumbnail, if applicable
+     * The type of the description (plain or HTML)
      *
-     * @var Thumbnail
+     * @var string
      */
-    protected $thumbnail;
+    protected $descriptionType;
+
+    /**
+     * Keywords that describe this media
+     *
+     * @var array
+     */
+    protected $keywords = [ ];
+
+    /**
+     * The thumbnails
+     *
+     * @var array
+     */
+    protected $thumbnails = [ ];
 
     /**
      * The player; e.g. a page that has an embedded video player for this media item
@@ -117,6 +138,48 @@ class Media extends Entity
      * @var string
      */
     protected $player;
+
+    /**
+     * The hash of the binary media file.
+     *
+     * @var string
+     */
+    protected $hash;
+
+    /**
+     * The algorithm used to create the hash.
+     *
+     * @var string
+     */
+    protected $hashAlgorithm;
+
+    /**
+     * Comments on the media
+     *
+     * @var array
+     */
+    protected $comments = [ ];
+
+    /**
+     * The credits
+     *
+     * @var array
+     */
+    protected $credits = [ ];
+
+    /**
+     * The text (transcripts)
+     *
+     * @var array
+     */
+    protected $texts = [ ];
+
+    /**
+     * The restrictions
+     *
+     * @var array
+     */
+    protected $restrictions = [ ];
 
     /**
      * Convert this entity into an XML element
@@ -164,23 +227,87 @@ class Media extends Entity
         }
 
         if ( $this->title ) {
-            $title = $this->createElement( 'media:title', $this->title );
+            $title = $this->createElement(
+                'media:title',
+                $this->title,
+                [ ],
+                ( $this->titleType === 'html' )
+            );
+            if ( $this->titleType ) {
+                $title->setAttribute( 'type', $this->titleType );
+            }
             $media->appendChild( $title );
         }
 
         if ( $this->description ) {
-            $description = $this->createElement( 'media:description', $this->description );
+            $description = $this->createElement(
+                'media:description',
+                $this->description,
+                [ ],
+                ( $this->descriptionType === 'html' )
+            );
+            if ( $this->descriptionType ) {
+                $description->setAttribute( 'type', $this->descriptionType );
+            }
             $media->appendChild( $description );
         }
 
-        if ( $this->thumbnail ) {
-            $media->appendChild( $this->thumbnail->element( ) );
+        if ( count( $this->keywords ) ) {
+            $media->appendChild(
+                $this->createElement(
+                    'media:keywords',
+                    implode( ', ', $this->keywords )
+                )
+            );
+        }
+
+        if ( count( $this->thumbnails ) ) {
+            foreach( $this->thumbnails as $thumbnail ) {
+                $media->appendChild( $thumbnail->element( ) );
+            }
         }
 
         if ( $this->player ) {
             $player = $this->createElement( 'media:player', null );
             $player->setAttribute( 'url', $this->player );
             $media->appendChild( $player );
+        }
+
+        if ( $this->hash ) {
+            $hash = $this->createElement( 'media:hash', $this->hash );
+            if ( $this->hashAlgorithm ) {
+                $hash->setAttribute( 'algo', $this->hashAlgorithm );
+            }
+            $media->appendChild( $hash );
+        }
+
+        if ( count( $this->comments ) ) {
+            $comments = $this->createElement( 'media:comments' );
+            foreach( $this->comments as $comment ) {
+                $comments->appendChild( $this->createElement( 'media:comment', $comment ) );
+            }
+            $media->appendChild( $comments );
+        }
+
+        if ( count( $this->credits ) ) {
+            foreach( $this->credits as $credit ) {
+                /** @var Credit $credit */
+                $media->appendChild( $credit->element( ) );
+            }
+        }
+
+        if ( count( $this->texts ) ) {
+            foreach( $this->texts as $text ) {
+                /** @var Text $text */
+                $media->appendChild( $text->element( ) );
+            }
+        }
+
+        if ( count( $this->restrictions ) ) {
+            foreach( $this->restrictions as $restriction ) {
+                /** @var Restriction $restriction */
+                $media->appendChild( $restriction->element( ) );
+            }
         }
 
         return $media;
@@ -311,11 +438,13 @@ class Media extends Entity
      * Set the media's title
      *
      * @param string $title
+     * @param string $type
      * @return Media
      */
-    public function title( string $title ) : self
+    public function title( string $title, $type = null ) : self
     {
-        $this->title = $title;
+        $this->title        =   $title;
+        $this->titleType    =   $type;
         return $this;
     }
 
@@ -323,24 +452,38 @@ class Media extends Entity
      * Set a description of the media
      *
      * @param string $description
+     * @param string $type
      * @return Media
      */
-    public function description( string $description ) : self
+    public function description( string $description, $type = null ) : self
     {
         $this->description = $description;
+        $this->descriptionType = $type;
         return $this;
     }
 
     /**
-     * Set the media's thumbnail
+     * Set the keywords
      *
-     * @param Thumbnail $thumbnail
+     * @param string ...$keywords
      * @return Media
      */
-    public function thumbnail( Thumbnail $thumbnail ) : self
+    public function keywords( string ...$keywords ) : self
     {
-        $this->thumbnail = $thumbnail;
+        $this->keywords = $keywords;
         return $this;
+    }
+
+    /**
+     * Add a thumbnail
+     *
+     * @return Thumbnail
+     */
+    public function addThumbnail( ) : Thumbnail
+    {
+        $thumbnail = new Thumbnail( $this->feed );
+        $this->thumbnails[ ] = $thumbnail;
+        return $thumbnail;
     }
 
     /**
@@ -355,5 +498,68 @@ class Media extends Entity
         return $this;
     }
 
+    /**
+     * Set the hash of the binary media file
+     *
+     * @param string $hash
+     * @param string $algorithm
+     * @return $this
+     */
+    public function hash( $hash, $algorithm = null ) : self
+    {
+        $this->hash = $hash;
+        $this->hashAlgorithm = $algorithm;
+        return $this;
+    }
+
+    /**
+     * Add one or more comments
+     *
+     * @param string ...$comments
+     * @return Media
+     */
+    public function comments( ...$comments ) : self
+    {
+        foreach( $comments as $comment ) {
+            $this->comments[ ] = $comment;
+        }
+        return $this;
+    }
+
+    /**
+     * Add a credit
+     *
+     * @return Credit
+     */
+    public function addCredit( ) : Credit
+    {
+        $credit = new Credit( $this->feed );
+        $this->credits[ ] = $credit;
+        return $credit;
+    }
+
+    /**
+     * Add a text (transcript)
+     *
+     * @return Text
+     */
+    public function addText( ) : Text
+    {
+        $text = new Text( $this->feed );
+        $this->texts[ ] = $text;
+        return $text;
+    }
+
+    /**
+     * Add a restriction
+     *
+     * @return Restriction
+     */
+    public function addRestriction( ) : Restriction
+    {
+        $restriction = new Restriction( $this->feed );
+        $this->restrictions[ ] = $restriction;
+        return $restriction;
+    }
 
 }

@@ -5,11 +5,13 @@ namespace Lukaswhite\FeedWriter\Entities\Rss;
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\General\Link;
 use Lukaswhite\FeedWriter\Entities\General\Image;
+use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
 use Lukaswhite\FeedWriter\Traits\HasCategories;
 use Lukaswhite\FeedWriter\Traits\HasLink;
 use Lukaswhite\FeedWriter\Traits\HasPublishedDate;
 use Lukaswhite\FeedWriter\Traits\HasTextInput;
-use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
+use Lukaswhite\FeedWriter\Traits\HasTitle;
+use Lukaswhite\FeedWriter\Traits\HasDescription;
 
 /**
  * Class Channel
@@ -18,11 +20,13 @@ use Lukaswhite\FeedWriter\Traits\HasTitleAndDescription;
  */
 class Channel extends Entity
 {
-    use HasTitleAndDescription,
+    use HasTitle,
+        HasDescription,
         HasLink,
         HasPublishedDate,
         HasCategories,
-        HasTextInput;
+        HasTextInput,
+        HasGeoRSS;
 
     /**
      * The date and time that the feed was last built
@@ -163,15 +167,15 @@ class Channel extends Entity
     public function addLink( $name, $url, $rel = null, $type = null ) : self
     {
         $link = new Link( $this->feed );
-        $link->setName( $name )
-            ->setUrl( $url );
+        $link->tagName( $name )
+            ->url( $url );
 
         if ( $rel ) {
-            $link->setRel( $rel );
+            $link->rel( $rel );
         }
 
         if ( $type ) {
-            $link->setType( $type );
+            $link->type( $type );
         }
 
         $this->links[ ] = $link;
@@ -249,10 +253,11 @@ class Channel extends Entity
      */
     public function element( )  : \DOMElement
     {
-        $channel = $this->feed->getDocument( )->createElement( 'channel' );
-        $this->feed->getDocument( )->appendChild( $channel );
+        $channel = $this->createElement( 'channel' );
 
-        $this->addTitleAndDescriptionElements( $channel );
+        $this->addTitleElement( $channel );
+
+        $this->addDescriptionElement( $channel );
 
         $this->addLinkElement( $channel );
 
@@ -296,6 +301,14 @@ class Channel extends Entity
 
         // Optionally add the textInput
         $this->addTextInputElement( $channel );
+
+        // Optionally add the GeoRSS tags
+        if ( $this->geoRSS ) {
+            $this->geoRSS->addTags( $channel );
+        }
+
+        // Add any custom elements
+        $this->addElementsToDOMElement( $channel );
 
         // Now add the items
         if ( count( $this->items ) ) {

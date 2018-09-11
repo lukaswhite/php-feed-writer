@@ -52,6 +52,13 @@ class Channel extends \Lukaswhite\FeedWriter\Entities\Rss\Channel
     protected $newFeedUrl;
 
     /**
+     * The categories
+     *
+     * @var array
+     */
+    protected $categories = [ ];
+
+    /**
      * Add an item
      *
      * @return Item
@@ -109,10 +116,11 @@ class Channel extends \Lukaswhite\FeedWriter\Entities\Rss\Channel
      */
     public function element( ) : \DOMElement
     {
-        $channel = $this->feed->getDocument( )->createElement( 'channel' );
+        $channel = $this->createElement( 'channel' );
         $this->feed->getDocument( )->appendChild( $channel );
 
-        $this->addTitleAndDescriptionElements( $channel );
+        $this->addTitleElement( $channel );
+        $this->addDescriptionElement( $channel );
 
         $this->addLinkElement( $channel );
 

@@ -22,6 +22,13 @@ class Thumbnail extends Entity
     protected $url;
 
     /**
+     * The time offset in relation to the media object
+     *
+     * @var string
+     */
+    protected $time;
+
+    /**
      * Set the URL of the thumbnail
      *
      * @param string $url
@@ -34,6 +41,18 @@ class Thumbnail extends Entity
     }
 
     /**
+     * Set the time offset in relation to the media object
+     *
+     * @param string|int $time
+     * @return $this
+     */
+    public function time( $time ) : self
+    {
+        $this->time = $time;
+        return $this;
+    }
+
+    /**
      * Create a DOM element that represents this entity.
      *
      * @return \DOMElement
@@ -42,7 +61,11 @@ class Thumbnail extends Entity
     {
         $thumbnail = $this->feed->getDocument( )->createElement( 'media:thumbnail' );
         $thumbnail->setAttribute( 'url', $this->url );
-        $this->addDimensionsElements( $thumbnail );
+        $this->addDimensionsToElement( $thumbnail );
+
+        if ( $this->time ) {
+            $thumbnail->setAttribute( 'time', $this->time );
+        }
 
         return $thumbnail;
     }

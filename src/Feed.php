@@ -142,6 +142,19 @@ abstract class Feed
     }
 
     /**
+     * Register the GeoRSS namespace
+     *
+     * @return $this
+     */
+    public function registerGeoRSSNamespace( ) : self
+    {
+        return $this->registerNamespace(
+            'georss',
+            'http://www.georss.org/georss'
+        );
+    }
+
+    /**
      * Set the XSL stylesheet
      *
      * @param string $uri
@@ -189,6 +202,25 @@ abstract class Feed
                         'type="text/xsl" href="%s"',
                         $this->xslStylesheet
                     )
+                )
+            );
+        }
+        return $this;
+    }
+
+    /**
+     * Add the namespaces
+     *
+     * @param \DOMElement $feed
+     * @return $this
+     */
+    protected function addNamespaces( \DOMElement $feed ) : self
+    {
+        foreach ( $this->namespaces as $prefix => $uri ) {
+            $feed->setAttributeNodeNS(
+                new \DomAttr(
+                    sprintf( 'xmlns:%s', $prefix ),
+                    $uri
                 )
             );
         }

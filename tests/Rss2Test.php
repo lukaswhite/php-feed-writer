@@ -81,7 +81,6 @@ class Rss2Test extends TestCase
         $descriptions = $xpath->query( '/rss/channel/description' );
         $this->assertEquals( 1, $descriptions->length );
         $this->assertEquals( 'A description of the channel', $descriptions[ 0 ]->textContent );
-        $this->assertTrue( strpos( $feed->toString( ), '<description><![CDATA[' ) > -1 );
 
         $languages = $xpath->query( '/rss/channel/language' );
         $this->assertEquals( 1, $languages->length );
@@ -194,139 +193,14 @@ class Rss2Test extends TestCase
         );
     }
 
-    public function testAddingMedia( )
-    {
-        $feed = new \Lukaswhite\FeedWriter\RSS2( );
-        //$feed->registerNamespace( 'media', 'http://search.yahoo.com/mrss/' );
-        $feed->registerAtomNamespace( );
-
-        $channel = $feed->addChannel( );
-
-        $channelPubDate = new \DateTime( '2018-09-04 09:30' );
-        $channelLastBuildDate = new \DateTime( '2018-09-06 17:30' );
-
-        $channel->title( 'Channel title' )
-            ->description( 'A description of the channel' )
-            ->link( 'http://example.com' )
-            ->pubDate( $channelPubDate )
-            ->lastBuildDate( $channelLastBuildDate )
-            ->language( 'en-US' )
-            ->copyright( 'Copyright Example Org' )
-            ->addLink( 'atom:link', 'http://example.com', 'self', 'application/atom+xml' )
-            ->categories( 'one', 'two', 'three' )
-            ->addCategory( 'four' );
-
-
-        $item = $channel->addItem( );
-
-        $item->title( 'Rocking Webmonkey Garage Band' )
-            ->description( 'The best ever garage band on the Internet.' )
-            ->link( 'http://www.webmonkey.com/ourband.html' )
-            ->guid( 'http://www.webmonkey.com/ourband.html', true );
-
-
-        $media = $item->addMedia( )
-                ->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
-                ->fileSize( 2471632 )
-                ->type( 'video/mpeg' )
-                ->width( 320 )
-                ->height( 240 )
-                ->duration( 147 )
-                ->medium( 'video' )
-                ->expression( 'full' )
-                ->bitrate( 128 )
-                ->framerate( 24 )
-                ->isDefault( )
-                //->player( 'http://www.somevideouploadsite/webmonkey.html' )
-                ->title( 'The Webmonkey Band "Monkey Rock"' )
-                ->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the Fillmore Auditorium.' )
-                ->thumbnail(
-                    ( new \Lukaswhite\FeedWriter\Entities\Media\Thumbnail( $feed ) )
-                        ->url( 'http://www.webmonkey.com/images/monkeyrock-thumb.jpg' )
-                        ->width( 145 )
-                        ->height( 98 )
-                );
-
-
-        $rendered = $feed->build( )->saveXml( );
-
-        $this->assertTrue( strpos( $rendered, 'xmlns:media="http://search.yahoo.com/mrss' ) > -1 );
-
-        $mediaAttributes = $this->getAttributesOfElementNamed( 'media:content', $rendered, [ 'media' => 'http://search.yahoo.com/mrss/' ] );
-
-        $this->assertArrayHasKey( 'url', $mediaAttributes );
-        $this->assertEquals( 'http://www.webmonkey.com/monkeyrock.mpg', $mediaAttributes[ 'url' ] );
-        $this->assertArrayHasKey( 'type', $mediaAttributes );
-        $this->assertEquals( 'video/mpeg', $mediaAttributes[ 'type' ] );
-        $this->assertArrayHasKey( 'medium', $mediaAttributes );
-        $this->assertEquals( 'video', $mediaAttributes[ 'medium' ] );
-        $this->assertArrayHasKey( 'fileSize', $mediaAttributes );
-        $this->assertEquals( '2471632', $mediaAttributes[ 'fileSize' ] );
-        $this->assertArrayHasKey( 'width', $mediaAttributes );
-        $this->assertEquals( '320', $mediaAttributes[ 'width' ] );
-        $this->assertArrayHasKey( 'height', $mediaAttributes );
-        $this->assertEquals( '240', $mediaAttributes[ 'height' ] );
-        $this->assertArrayHasKey( 'duration', $mediaAttributes );
-        $this->assertEquals( '147', $mediaAttributes[ 'duration' ] );
-        $this->assertArrayHasKey( 'bitrate', $mediaAttributes );
-        $this->assertEquals( '128', $mediaAttributes[ 'bitrate' ] );
-        $this->assertArrayHasKey( 'framerate', $mediaAttributes );
-        $this->assertEquals( '24', $mediaAttributes[ 'framerate' ] );
-        $this->assertArrayHasKey( 'expression', $mediaAttributes );
-        $this->assertEquals( 'full', $mediaAttributes[ 'expression' ] );
-        $this->assertArrayHasKey( 'isDefault', $mediaAttributes );
-        $this->assertEquals( 'true', $mediaAttributes[ 'isDefault' ] );
-
-        //print( $feed->build( )->saveXML( ) );
-
-    }
-
-    public function testMediaGroups( )
-    {
-        $feed = new \Lukaswhite\FeedWriter\RSS2( );
-        $feed->prettyPrint( );
-
-        $channel = $feed->addChannel( );
-
-        $channel->title( 'Channel title' )
-            ->description( 'A description of the channel' )
-            ->link( 'http://example.com' );
-
-        $item = $channel->addItem( );
-
-        $item->title( 'Rocking Webmonkey Garage Band' )
-            ->description( 'The best ever garage band on the Internet.' )
-            ->link( 'http://www.webmonkey.com/ourband.html' )
-            ->guid( 'http://www.webmonkey.com/ourband.html', true );
-
-        $mediaGroup = $item->addMediaGroup( );
-
-        $mediaGroup->addMedia( )
-            ->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
-            ->fileSize( 2471632 )
-            ->type( Media::VIDEO );
-
-        $mediaGroup->addMedia( )
-            ->url( 'http://www.webmonkey.com/monkeyrock.mpeg' )
-            ->fileSize( 1253 )
-            ->type( Media::IMAGE );
-
-        $doc = new \DOMDocument( );
-        $doc->loadXML( $feed->toString( ) );
-        $xpath = new \DOMXPath($doc);
-
-
-        $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/media:group' )->length );
-        $this->assertEquals( 2, $xpath->query( '/rss/channel/item[1]/media:group[1]/media:content' )->length );
-        //$this->assertEquals( 'Yes', $xpath->query( '/rss/channel/itunes:block' )[ 0 ]->textContent );
-
-    }
-
     public function testMisc( )
     {
         $feed = new RSS2( );
         $feed->registerDublinCoreNamespace( );
         $this->assertTrue( strpos( $feed->toString( ), 'xmlns:media="http://purl.org/dc/elements/1.1' ) > -1 );
+        $feed->registerGeoRSSNamespace( );
+        $this->assertTrue( strpos( $feed->toString( ), 'xmlns:georss="http://www.georss.org/georss' ) > -1 );
+
     }
 
     public function testTextInput( )
@@ -363,21 +237,92 @@ class Rss2Test extends TestCase
 
     }
 
-    /**
-     * @expectedException \Lukaswhite\FeedWriter\Exceptions\InvalidMediumException
-     */
-    public function testThatAnExceptionIsThrownIfMediumIsInvalid( )
+    public function testThatHTMLDescriptionsAreAutomaticallyEncoded( )
     {
-        $media = new \Lukaswhite\FeedWriter\Entities\Media\Media( new RSS2( ) );
-        $media->medium( 'dance' );
+        $feed = new \Lukaswhite\FeedWriter\RSS2( );
+        $feed->prettyPrint( );
+        $this->assertTrue( $feed->getDocument( )->formatOutput );
+
+        $channel = $feed->addChannel( );
+
+        $channelPubDate = new \DateTime( '2018-09-04 09:30' );
+        $channelLastBuildDate = new \DateTime( '2018-09-06 17:30' );
+
+        $channel->title( 'Channel title' )
+            ->description( 'A description of the <strong>channel</strong>' );
+        $this->assertTrue( strpos( $feed->toString( ), '<description><![CDATA[' ) > -1 );
     }
 
-    /**
-     * @expectedException \Lukaswhite\FeedWriter\Exceptions\InvalidExpressionException
-     */
-    public function testThatAnExceptionIsThrownIfExpressionIsInvalid( )
+    public function testCanSpecifyToEncodeDescription( )
     {
-        $media = new \Lukaswhite\FeedWriter\Entities\Media\Media( new RSS2( ) );
-        $media->expression( 'e=mc2' );
+        $feed = new \Lukaswhite\FeedWriter\RSS2( );
+        $feed->prettyPrint( );
+        $this->assertTrue( $feed->getDocument( )->formatOutput );
+
+        $channel = $feed->addChannel( );
+
+        $channelPubDate = new \DateTime( '2018-09-04 09:30' );
+        $channelLastBuildDate = new \DateTime( '2018-09-06 17:30' );
+
+        $channel->title( 'Channel title' )
+            ->description( 'A description of the channel', true );
+        $this->assertTrue( strpos( $feed->toString( ), '<description><![CDATA[' ) > -1 );
     }
+
+    public function testAddingCustomElements( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\RSS2( );
+        $feed->registerNamespace( 'foo', 'http://foo.com' );
+        $channel = $feed->addChannel( );
+        $bar = $channel->addElement( 'foo:bar', 'just a test', [ 'x' => 1, 'y' => 2 ] );
+
+        $doc = new \DOMDocument( );
+
+        $doc->loadXML( $feed->toString( ) );
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/foo:bar' )->length );
+        $this->assertEquals(
+            'just a test',
+            $xpath->query( '/rss/channel/foo:bar' )[ 0 ]->textContent
+        );
+
+        $attributes = $this->getAttributesOfElementNamed( 'foo:bar', $feed->toString( ) );
+        $this->assertArrayHasKey( 'x', $attributes );
+        $this->assertEquals( '1', $attributes[ 'x' ] );
+        $this->assertArrayHasKey( 'y', $attributes );
+        $this->assertEquals( '2', $attributes[ 'y' ] );
+    }
+
+    public function testAddingCustomElementsWithChildren( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\RSS2( );
+        $feed->registerNamespace( 'library', 'http://example.com/library' );
+        $channel = $feed->addChannel( );
+
+        $item = $channel->addItem( );
+
+        $book = $item->addElement( 'library:book', null, [ ] );
+        $book->addElement( 'title', 'A Book' );
+        $book->addElement( 'isbn', '978-3-16-148410-0' );
+
+
+        $doc = new \DOMDocument( );
+
+        $doc->loadXML( $feed->toString( ) );
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/library:book' )->length );
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/library:book/title' )->length );
+        $this->assertEquals(
+            'A Book',
+            $xpath->query( '/rss/channel/item[1]/library:book/title' )[ 0 ]->textContent
+        );
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/library:book/isbn' )->length );
+        $this->assertEquals(
+            '978-3-16-148410-0',
+            $xpath->query( '/rss/channel/item[1]/library:book/isbn' )[ 0 ]->textContent
+        );
+    }
+
 }
