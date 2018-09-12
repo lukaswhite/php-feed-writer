@@ -63,7 +63,7 @@ class Point extends Location
     {
         return $this->createElement(
             self::TAG_NAME,
-            sprintf( '%s, %s', $this->lat, $this->lng )
+            sprintf( '%s %s', $this->lat, $this->lng )
         );
     }
 }

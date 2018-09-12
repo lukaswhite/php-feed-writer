@@ -24,7 +24,7 @@ class GeoRSSTest extends TestCase
         $entry->geoRSS( )->addPoint( 45.256, -71.92 );
 
         $this->assertEquals(
-            '45.256, -71.92',
+            '45.256 -71.92',
             $this->getContentsOfElementNamed( 'georss:point', $feed->toString( ) )
         );
 
@@ -178,7 +178,7 @@ class GeoRSSTest extends TestCase
         $entry->geoRSS( )->isCenteredOnPoint( 45.256, -71.92 );
 
         $this->assertEquals(
-            '45.256, -71.92',
+            '45.256 -71.92',
             $this->getContentsOfElementNamed( 'georss:point', $feed->toString( ) )
         );
 
@@ -202,7 +202,7 @@ class GeoRSSTest extends TestCase
         $feed->geoRSS( )->addPoint( 45.256, -71.92 );
 
         $this->assertEquals(
-            '45.256, -71.92',
+            '45.256 -71.92',
             $this->getContentsOfElementNamed( 'georss:point', $feed->toString( ) )
         );
 
@@ -223,7 +223,7 @@ class GeoRSSTest extends TestCase
         $channel->geoRSS( )->addPoint( 45.256, -71.92 );
 
         $this->assertEquals(
-            '45.256, -71.92',
+            '45.256 -71.92',
             $this->getContentsOfElementNamed( 'georss:point', $feed->toString( ) )
         );
 
@@ -248,7 +248,7 @@ class GeoRSSTest extends TestCase
             ->geoRSS( )->addPoint( 45.256, -71.92 );
 
         $this->assertEquals(
-            '45.256, -71.92',
+            '45.256 -71.92',
             $this->getContentsOfElementNamed( 'georss:point', $feed->toString( ) )
         );
 
