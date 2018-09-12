@@ -488,6 +488,12 @@ $feed
 		->url( '/feed' )
 		->rel( 'self' );
 ```		
+
+Or use the short-cut method:
+
+```php
+$feed->addLinkToSelf( 'http://example.org/feed' )
+```
 		
 To add a link to a related webpage, you might do this:
 
