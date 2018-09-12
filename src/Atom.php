@@ -9,12 +9,12 @@ use Lukaswhite\FeedWriter\Traits\Atom\HasAuthors;
 use Lukaswhite\FeedWriter\Traits\Atom\HasCategories;
 use Lukaswhite\FeedWriter\Traits\Atom\HasContributors;
 use Lukaswhite\FeedWriter\Traits\Atom\HasId;
+use Lukaswhite\FeedWriter\Traits\Atom\HasLinks;
 use Lukaswhite\FeedWriter\Traits\Atom\HasUpdated;
 use Lukaswhite\FeedWriter\Traits\CreatesDOMElements;
 use Lukaswhite\FeedWriter\Traits\Atom\HasTitle;
 use Lukaswhite\FeedWriter\Traits\Atom\HasRights;
 use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
-use Lukaswhite\FeedWriter\Traits\HasLink;
 
 /**
  * Class Atom
@@ -25,12 +25,12 @@ class Atom extends Feed
 {
     use CreatesDOMElements,
         HasTitle,
-        HasLink,
         HasUpdated,
         HasId,
         HasAuthors,
         HasContributors,
         HasCategories,
+        HasLinks,
         HasRights,
         HasGeoRSS;
 
@@ -157,6 +157,22 @@ class Atom extends Feed
     }
 
     /**
+     * Add a link back to the feed itself
+     *
+     * @param string $url
+     * @return $this
+     */
+    public function addLinkToSelf( string $url )
+    {
+        $this
+            ->addLink( )
+            ->url( $url )
+            ->rel( 'self' );
+
+        return $this;
+    }
+
+    /**
      * Add an entry to the feed
      *
      * @return Entry
@@ -205,11 +221,11 @@ class Atom extends Feed
             $feed->appendChild( $this->subtitle->element( ) );
         }
 
-        $this->addLinkElement( $feed );
-
         $this->addUpdatedElement( $feed );
 
         $this->addIdElement( $feed );
+
+        $this->addLinkElements( $feed );
 
         $this->addAuthorElements( $feed );
 

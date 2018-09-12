@@ -13,12 +13,17 @@ class AtomTest extends TestCase
 
         $feed->title( 'Example Feed', 'plain' )
             ->subtitle( 'An Example', 'plain' )
-            ->link( 'http://example.org/' )
+            ->addLinkToSelf( 'http://example.org/feed' )
             ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
             ->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' )
             ->rights( '&amp;copy; 2005 John Doe', 'html' )
             ->icon( 'http://example.org/icon.png' )
             ->logo( 'http://example.org/logo.png' );
+
+        $feed
+            ->addLink( )
+            ->url( 'http://www.example.org' )
+            ->rel( 'alternate' );
 
         $feed->addAuthor( )
             ->name( 'John Doe' )
@@ -164,10 +169,11 @@ class AtomTest extends TestCase
     {
 
         $feed = new \Lukaswhite\FeedWriter\Atom( );
+        $feed->prettyPrint();
 
         $feed->title( 'Example Feed', 'plain' )
             ->subtitle( 'An Example' )
-            ->link( 'http://example.org/' )
+            ->addLinkToSelf( 'http://example.org/feed' )
             ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
             ->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' )
             ->rights( '&amp;copy; 2005 John Doe', 'html' )
@@ -177,6 +183,8 @@ class AtomTest extends TestCase
         $feed->registerNamespace( 'foo', 'http://foo.com' );
 
         $bar = $feed->addElement( 'foo:bar', 'just a test', [ 'x' => 1, 'y' => 2 ] );
+
+        //print $feed->toString( );
 
         $this->assertTrue($this->xml_is_equal(
             simplexml_load_file( __DIR__ .'/fixtures/atom-with-custom-element.xml' ),

@@ -2,7 +2,8 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title type="plain">Example Feed</title>
   <subtitle type="plain">An Example</subtitle>
-  <link>http://example.org/</link>
+  <link href="http://example.org/feed" rel="self"/>
+  <link href="http://www.example.org" rel="alternate"/>
   <updated>2003-12-13T18:30:02+00:00</updated>
   <id>urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6</id>
   <author>

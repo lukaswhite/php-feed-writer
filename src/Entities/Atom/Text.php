@@ -12,6 +12,12 @@ use Lukaswhite\FeedWriter\Entities\Entity;
 class Text extends Entity
 {
     /**
+     * Class constants
+     */
+    const PLAIN         =   'plain';
+    const HTML          =   'html';
+
+    /**
      * The tag name; e.g. title, summary, content, rights
      *
      * @var string
