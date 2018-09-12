@@ -5,6 +5,7 @@ namespace Lukaswhite\FeedWriter\Entities\Rss;
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\General\Enclosure;
 use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
+use Lukaswhite\FeedWriter\Traits\HasCategories;
 use Lukaswhite\FeedWriter\Traits\HasLink;
 use Lukaswhite\FeedWriter\Traits\HasMedia;
 use Lukaswhite\FeedWriter\Traits\HasMediaGroups;
@@ -23,6 +24,7 @@ class Item extends Entity
         HasDescription,
         HasLink,
         HasPublishedDate,
+        HasCategories,
         HasMedia,
         HasMediaGroups,
         HasGeoRSS;
@@ -152,6 +154,8 @@ class Item extends Entity
         if ( $this->author ) {
             $item->appendChild( $this->createElement( 'author', $this->author ) );
         }
+
+        $this->addCategoryElements( $item );
 
         if ( count( $this->enclosures ) ) {
             foreach( $this->enclosures as $enclosure ) {

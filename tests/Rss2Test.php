@@ -52,7 +52,9 @@ class Rss2Test extends TestCase
             ->pubDate( new \DateTime( '2018-09-07 09:30' ) )
             ->guid( 'http://example.com/blog/post-1.html', true )
             ->encodedContent( '<p>The content of the item</p>' )
-            ->author( 'jbb@dallas.example.com (Joe Bob Briggs)' );
+            ->author( 'jbb@dallas.example.com (Joe Bob Briggs)' )
+            ->addCategory( 'one' )
+            ->addCategory( 'two', 'http://example.com/categories' );
 
         $enclosure = $item1->addEnclosure( );
         $enclosure->url( 'http://example.com/audio.mp3' )
@@ -174,6 +176,11 @@ class Rss2Test extends TestCase
         $firstItemAuthors = $xpath->query( '/rss/channel/item[1]/author' );
         $this->assertEquals( 1, $firstItemAuthors->length );
         $this->assertEquals( 'jbb@dallas.example.com (Joe Bob Briggs)', $firstItemAuthors[ 0 ]->textContent );
+
+        $firstItemcategories = $xpath->query( '/rss/channel/item[1]/category' );
+        $this->assertEquals( 2, $firstItemcategories->length );
+        $this->assertEquals( 'one', $firstItemcategories[ 0 ]->textContent );
+        $this->assertEquals( 'two', $firstItemcategories[ 1 ]->textContent );
 
         $firstItemPubDates = $xpath->query( '/rss/channel/item[1]/pubDate' );
         $this->assertEquals( 1, $firstItemPubDates->length );
