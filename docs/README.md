@@ -8,9 +8,9 @@ A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes.
 
 ## Features
 
-* Lightning Fast
-* Modern &mdash; uses PHP7
+* Modern (PHP7+)
 * Flexible; use it for syndication, media, podcasts...
+* Fast
 * Easy to extend
 * Supports custom namespaces
 * Full MediaRSS support
@@ -303,14 +303,33 @@ You can add an image to a channel by calling `addImage()`:
 	->height( 150 );
 ```
 
-> You can also add images using MediaRSS.	
+> You can also add images using MediaRSS.
+
+#### Setting the Generator
+
+The generator specifies the software used to generate the feed:
+
+```php
+$channel->generator( 'PHP Feed Writer (https://github.com/lukaswhite/php-feed-writer)' )
+```
+
+If you find this package useful, please consider setting it!
 
 #### Other Channel Properties
 
+There are a few other miscellaneous properties of the channel object [defined in the spec](http://www.rssboard.org/rss-profile#element-channel) and implemented for completeness. All are optional, and may or may not be observed by various feed readers.
+
 ```php
-$channel->generator( 'PHP Feed Writer' )
+$channel->author( 'author@example.com' )
+	->webmaster( 'webmaster@example.com' )
+	->managingEditor( 'editor@example.com (the editor)' )
+	->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' )
+	->skipDays( 'Saturday', 'Sunday' )
+	->skipHours( 0, 1, 2, 3, 4 )
 	->ttl( 60 );
 ```
+
+> Note that the `author`, `webmaster` and `managingEditor` elements must contain an e-mail address, not just a name.
 
 ### Adding Items
 
@@ -362,6 +381,18 @@ The result will be:
 ```php
 $item->pubDate( new \DateTime( '2018-09-07 09:30' ) );
 ```
+
+#### Setting the Content of an Item
+
+RSS2.0 allows you to incoporate the full content of an item; for example the whole of a blog post. 
+
+You can add this as follows:
+
+```php
+$item->encodedContent( '<p>The content of the item</p>' );
+```
+
+> Fro the spec; "the content MUST be suitable for presentation as HTML"
 
 #### Adding Enclosures
 
@@ -525,6 +556,8 @@ $feed->generator(
 	'1.0' 
 );
 ```            
+
+If you find this package useful, please consider setting it!
 
 #### Icon
 

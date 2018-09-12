@@ -30,6 +30,11 @@ class Rss2Test extends TestCase
             ->addPubSubHubbubLink( 'http://pubsubhubbub.appspot.com' )
             ->generator( 'Feed Writer' )
             ->ttl( 60 )
+            ->skipDays( 'Saturday', 'Sunday' )
+            ->skipHours( 0, 1, 2, 3, 4 )
+            ->webmaster( 'webmaster@example.com' )
+            ->managingEditor( 'editor@example.com (the editor)' )
+            ->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' )
             ->categories( 'one', 'two', 'three' )
             ->addCategory( 'four' )
             ->addImage( )
@@ -45,7 +50,9 @@ class Rss2Test extends TestCase
             ->description( 'A description of the first item' )
             ->link( 'http://example.com/blog/post-1.html' )
             ->pubDate( new \DateTime( '2018-09-07 09:30' ) )
-            ->guid( 'http://example.com/blog/post-1.html', true );
+            ->guid( 'http://example.com/blog/post-1.html', true )
+            ->encodedContent( '<p>The content of the item</p>' )
+            ->author( 'jbb@dallas.example.com (Joe Bob Briggs)' );
 
         $enclosure = $item1->addEnclosure( );
         $enclosure->url( 'http://example.com/audio.mp3' )
@@ -112,6 +119,21 @@ class Rss2Test extends TestCase
         $this->assertEquals( 1, $ttls->length );
         $this->assertEquals( '60', $ttls[ 0 ]->textContent );
 
+        $webmasters = $xpath->query( '/rss/channel/webMaster' );
+        $this->assertEquals( 1, $webmasters->length );
+        $this->assertEquals( 'webmaster@example.com', $webmasters[ 0 ]->textContent );
+
+        $managingEditors = $xpath->query( '/rss/channel/managingEditor' );
+        $this->assertEquals( 1, $managingEditors->length );
+        $this->assertEquals( 'editor@example.com (the editor)', $managingEditors[ 0 ]->textContent );
+
+        $ratings = $xpath->query( '/rss/channel/rating' );
+        $this->assertEquals( 1, $ratings->length );
+        $this->assertEquals(
+            '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))',
+            $ratings[ 0 ]->textContent
+        );
+
         $atomLinks = $xpath->query( '/rss/channel/atom:link' );
         $this->assertEquals( 2, $atomLinks->length );
         $atomLinkAttributes = $this->getAttributesOfElementNamed( 'atom:link', $feed->toString( ) );
@@ -123,6 +145,12 @@ class Rss2Test extends TestCase
         $this->assertEquals( 'application/atom+xml', $atomLinkAttributes[ 'type' ] );
 
         $this->assertTrue( strpos( $feed->toString( ), 'xmlns:atom="http://www.w3.org/2005/Atom' ) > -1 );
+
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/skipDays' )->length );
+        $this->assertEquals( 2, $xpath->query( '/rss/channel/skipDays/day' )->length );
+
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/skipHours' )->length );
+        $this->assertEquals( 5, $xpath->query( '/rss/channel/skipHours/hour' )->length );
 
         $items = $xpath->query( '/rss/channel/item' );
         $this->assertEquals( 2, $items->length );
@@ -137,6 +165,19 @@ class Rss2Test extends TestCase
         $firstItemDescriptions = $xpath->query( '/rss/channel/item[1]/description' );
         $this->assertEquals( 1, $firstItemDescriptions->length );
         $this->assertEquals( 'A description of the first item', $firstItemDescriptions[ 0 ]->textContent );
+
+        $firstItemEncodedContents = $xpath->query( '/rss/channel/item[1]/content:encoded' );
+        $this->assertEquals( 1, $firstItemEncodedContents->length );
+        $this->assertEquals( '<p>The content of the item</p>', $firstItemEncodedContents[ 0 ]->textContent );
+        $this->assertTrue( strpos( $feed->toString( ), '<content:encoded><![CDATA[' ) > -1 );
+
+        $firstItemAuthors = $xpath->query( '/rss/channel/item[1]/author' );
+        $this->assertEquals( 1, $firstItemAuthors->length );
+        $this->assertEquals( 'jbb@dallas.example.com (Joe Bob Briggs)', $firstItemAuthors[ 0 ]->textContent );
+
+        $firstItemPubDates = $xpath->query( '/rss/channel/item[1]/pubDate' );
+        $this->assertEquals( 1, $firstItemPubDates->length );
+        $this->assertEquals( 'Fri, 07 Sep 2018 09:30:00 +0000', $firstItemPubDates[ 0 ]->textContent );
 
         $enclosures = $xpath->query( '/rss/channel/item[1]/enclosure' );
         $this->assertEquals( 1, $enclosures->length );
@@ -174,8 +215,6 @@ class Rss2Test extends TestCase
             '150',
             $xpath->query( '/rss/channel/image/height' )[ 0 ]->textContent
         );
-
-
 
         $this->assertEquals( $feed->toString( ), ( string ) $feed );
     }
@@ -233,6 +272,45 @@ class Rss2Test extends TestCase
         $this->assertEquals( 'Text input name', $xpath->query( '/rss/channel/textInput/name' )[ 0 ]->textContent );
         $this->assertEquals( 1, $xpath->query( '/rss/channel/textInput/link' )->length );
         $this->assertEquals( 'http://example.com/script.cgi', $xpath->query( '/rss/channel/textInput/link' )[ 0 ]->textContent );
+
+
+    }
+
+    public function testCloud( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\RSS2( );
+        $feed->prettyPrint( );
+
+        $channel = $feed->addChannel( );
+
+        $channel->title( 'Channel title' )
+            ->description( 'A description of the channel' )
+            ->link( 'http://example.com' );
+
+        $channel->addCloud( )
+            ->domain( 'server.example.com' )
+            ->path( '/rpc' )
+            ->port( 80 )
+            ->protocol( 'xml-rpc' )
+            ->registerProcedure( 'cloud.notify' );
+
+        $doc = new \DOMDocument( );
+        $doc->loadXML( $feed->toString( ) );
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertEquals( 1, $xpath->query( '/rss/channel/cloud' )->length );
+
+        $attributes = $this->getAttributesOfElementNamed( 'cloud', $feed->toString( ) );
+        $this->assertArrayHasKey( 'domain', $attributes );
+        $this->assertEquals( 'server.example.com', $attributes[ 'domain' ] );
+        $this->assertArrayHasKey( 'path', $attributes );
+        $this->assertEquals( '/rpc', $attributes[ 'path' ] );
+        $this->assertArrayHasKey( 'port', $attributes );
+        $this->assertEquals( '80', $attributes[ 'port' ] );
+        $this->assertArrayHasKey( 'protocol', $attributes );
+        $this->assertEquals( 'xml-rpc', $attributes[ 'protocol' ] );
+        $this->assertArrayHasKey( 'registerProcedure', $attributes );
+        $this->assertEquals( 'cloud.notify', $attributes[ 'registerProcedure' ] );
 
 
     }

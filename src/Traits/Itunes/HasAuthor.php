@@ -17,12 +17,12 @@ trait HasAuthor
     protected $author;
 
     /**
-     * Set the subtitle
+     * Set the author of the item
      *
      * @param string $author
-     * @return $this
+     * @return self
      */
-    public function author( string $author ) : self
+    public function author( string $author )
     {
         $this->author = $author;
         return $this;

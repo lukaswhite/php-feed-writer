@@ -9,15 +9,8 @@ use Lukaswhite\FeedWriter\Entities\Entity;
  *
  * @package Lukaswhite\FeedWriter\Entities\Atom
  */
-class Category extends Entity
+class Category extends \Lukaswhite\FeedWriter\Entities\General\Category
 {
-    /**
-     * The term, which identifies this category
-     *
-     * @var string
-     */
-    protected $term;
-
     /**
      * The scheme, which identifies the categorization scheme via a URI
      *
@@ -39,11 +32,7 @@ class Category extends Entity
      */
     public function element( ) : \DOMElement
     {
-        $category = $this->createElement( 'category' );
-
-        if ( $this->term ) {
-            $category->setAttribute( 'term', $this->term );
-        }
+        $category = parent::element( );
 
         if ( $this->scheme ) {
             $category->setAttribute( 'scheme', $this->scheme );
@@ -57,12 +46,12 @@ class Category extends Entity
     }
 
     /**
-     * @param string $term
+     * @param string $label
      * @return Category
      */
-    public function term( string $term ) : self
+    public function label( string $label ) : self
     {
-        $this->term = $term;
+        $this->label = $label;
         return $this;
     }
 
@@ -75,19 +64,5 @@ class Category extends Entity
         $this->scheme = $scheme;
         return $this;
     }
-
-    /**
-     * @param string $label
-     * @return Category
-     */
-    public function label( string $label ) : self
-    {
-        $this->label = $label;
-        return $this;
-    }
-
-
-
-
 
 }

@@ -42,6 +42,20 @@ class Item extends Entity
     protected $guidIsPermalink = false;
 
     /**
+     * The encoded content of this item
+     *
+     * @var string
+     */
+    protected $encodedContent;
+
+    /**
+     * The author of the item
+     *
+     * @var string
+     */
+    protected $author;
+
+    /**
      * The enclosures
      *
      * @var array
@@ -59,6 +73,30 @@ class Item extends Entity
     {
         $this->guid = $guid;
         $this->guidIsPermalink = $isPermalink;
+        return $this;
+    }
+
+    /**
+     * Set the encoded content of the item
+     *
+     * @param string $encodedContent
+     * @return $this
+     */
+    public function encodedContent( string $encodedContent ) : self
+    {
+        $this->encodedContent = $encodedContent;
+        return $this;
+    }
+
+    /**
+     * Set the author of the item
+     *
+     * @param string $author
+     * @return $this
+     */
+    public function author( string $author )
+    {
+        $this->author = $author;
         return $this;
     }
 
@@ -96,6 +134,23 @@ class Item extends Entity
                 $guid = $this->createElement( 'guid', $this->guid );
             }
             $item->appendChild( $guid );
+        }
+
+        $this->addPublishedDateElement( $item );
+
+        if ( $this->encodedContent ) {
+            $item->appendChild(
+                $this->createElement(
+                    'content:encoded',
+                    $this->encodedContent,
+                    [ ],
+                    true
+                )
+            );
+        }
+
+        if ( $this->author ) {
+            $item->appendChild( $this->createElement( 'author', $this->author ) );
         }
 
         if ( count( $this->enclosures ) ) {

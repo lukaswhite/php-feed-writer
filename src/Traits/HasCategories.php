@@ -2,6 +2,8 @@
 
 namespace Lukaswhite\FeedWriter\Traits;
 
+use Lukaswhite\FeedWriter\Entities\Rss\Category;
+
 /**
  * Trait HasCategories
  * 
@@ -24,12 +26,9 @@ trait HasCategories
      */
     public function categories( ...$categories ) : self
     {
-        $this->categories = array_map(
-            function( $category ) {
-                $this->addCategory( $category );
-            },
-            $categories
-        );
+        foreach( $categories as $category ) {
+            $this->addCategory( $category );
+        }
         return $this;
     }
 
@@ -42,15 +41,15 @@ trait HasCategories
      */
     public function addCategory( string $category, string $domain = null ) : self
     {
-        $this->categories[ ] = [
-            'name'      =>  $category,
-            'domain'    =>  $domain,
-        ];
+        $this->categories[ ] = ( new Category( $this->feed ) )
+            ->term( $category )
+            ->domain( $domain );
+
         return $this;
     }
 
     /**
-     * Add the dimensions to the specified element.
+     * Add the categories to the specified element.
      *
      * @param \DOMElement $el
      * @return void
@@ -59,10 +58,8 @@ trait HasCategories
     {
         if ( count( $this->categories ) ) {
             foreach( $this->categories as $category ) {
-                $el = $this->feed->getDocument( )->createElement( 'category', $category[ 'name' ] );
-                if ( isset( $category[ 'domain' ] ) && ! empty( $category[ 'domain' ] ) ) {
-                    $el->setAttribute( 'domain', $category[ 'domain' ] );
-                }
+                /** @var Category $category */
+                $el->appendChild( $category->element( ) );
             }
         }
     }

@@ -78,6 +78,49 @@ class Channel extends Entity
     protected $links = [ ];
 
     /**
+     * The cloud element indicates that updates to the feed can be monitored using a web service
+     * that implements the RssCloud application programming interface
+     *
+     * @var Cloud
+     */
+    protected $cloud;
+
+    /**
+     * The webmaster
+     *
+     * @var string
+     */
+    protected $webmaster;
+
+    /**
+     * The managing editor
+     *
+     * @var string
+     */
+    protected $managingEditor;
+
+    /**
+     * The (PICS) rating
+     *
+     * @var string
+     */
+    protected $rating;
+
+    /**
+     * The days on which the feed is not updated
+     *
+     * @var array
+     */
+    protected $skipDays;
+
+    /**
+     * The hours of the day during which the feed is not updated
+     *
+     * @var array
+     */
+    protected $skipHours;
+
+    /**
      * The items that make up this channel
      *
      * @var array
@@ -141,6 +184,74 @@ class Channel extends Entity
     public function ttl( int $ttl ) : self
     {
         $this->ttl = $ttl;
+        return $this;
+    }
+
+    /**
+     * Set the webmaster
+     *
+     * @param string $webmaster
+     * @return Channel
+     */
+    public function webmaster( string $webmaster ) : self
+    {
+        $this->webmaster = $webmaster;
+        return $this;
+    }
+
+    /**
+     * Set the managing editor
+     *
+     * @param string $managingEditor
+     * @return Channel
+     */
+    public function managingEditor( string $managingEditor ) : self
+    {
+        $this->managingEditor = $managingEditor;
+        return $this;
+    }
+
+    /**
+     * Set the (PICS) rating
+     *
+     * @var string
+     * @return Channel
+     */
+    public function rating( string $rating ) : self
+    {
+        $this->rating = $rating;
+        return $this;
+    }
+
+    /**
+     * Set the days on which the feed is not updated
+     *
+     * e.g.
+     *
+     * ->skipDays( 'Saturday', 'Sunday' )
+     *
+     * @param string ...$days
+     * @return Channel
+     */
+    public function skipDays( string ...$days )
+    {
+        $this->skipDays = array_unique( $days );
+        return $this;
+    }
+
+    /**
+     * Set the hours at which the feed is not updated
+     *
+     * e.g.
+     *
+     * ->skipHours( 0, 1, 2, 3, 4 )
+     *
+     * @param int ...$hours
+     * @return Channel
+     */
+    public function skipHours( string ...$hours )
+    {
+        $this->skipHours = array_unique( $hours );
         return $this;
     }
 
@@ -224,6 +335,17 @@ class Channel extends Entity
     }
 
     /**
+     * Add a cloud element
+     *
+     * @return Cloud
+     */
+    public function addCloud( )
+    {
+        $this->cloud = new Cloud( $this->feed );
+        return $this->cloud;
+    }
+
+    /**
      * Add an item
      *
      * @return Item
@@ -282,8 +404,34 @@ class Channel extends Entity
             $channel->appendChild( $this->createElement( 'generator', $this->generator ) );
         }
 
+        if ( $this->webmaster ) {
+            $channel->appendChild( $this->createElement( 'webMaster', $this->webmaster ) );
+        }
+
+        if ( $this->managingEditor ) {
+            $channel->appendChild( $this->createElement( 'managingEditor', $this->managingEditor ) );
+        }
+
+        if ( $this->rating ) {
+            $channel->appendChild( $this->createElement( 'rating', $this->rating ) );
+        }
+
         if ( $this->ttl ) {
             $channel->appendChild( $this->createElement( 'ttl', $this->ttl ) );
+        }
+
+        if ( $this->skipDays && count( $this->skipDays ) ) {
+            $skipDays = $channel->appendChild( $this->createElement( 'skipDays' ) );
+            foreach( $this->skipDays as $day ) {
+                $skipDays->appendChild( $this->createElement( 'day', $day ) );
+            }
+        }
+
+        if ( $this->skipHours && count( $this->skipHours ) ) {
+            $skipHours = $channel->appendChild( $this->createElement( 'skipHours' ) );
+            foreach( $this->skipHours as $hour ) {
+                $skipHours->appendChild( $this->createElement( 'hour', $hour ) );
+            }
         }
 
         if ( $this->image ) {
@@ -301,6 +449,11 @@ class Channel extends Entity
 
         // Optionally add the textInput
         $this->addTextInputElement( $channel );
+
+        // Optionally add the cloud element
+        if ( $this->cloud ) {
+            $channel->appendChild( $this->cloud->element( ) );
+        }
 
         // Optionally add the GeoRSS tags
         if ( $this->geoRSS ) {
