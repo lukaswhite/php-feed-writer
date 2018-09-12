@@ -68,7 +68,7 @@ class Link extends Entity
             $el->setAttribute( 'type', $this->type );
         }
         if ( $this->language ) {
-            $el->setAttribute( 'language', $this->language );
+            $el->setAttribute( 'hreflang', $this->language );
         }
         if ( $this->length ) {
             $el->setAttribute( 'length', $this->length );
