@@ -110,6 +110,10 @@ class MediaTest extends TestCase
         $media->addRestriction( )->onSharing( )->deny( );
         $media->addRestriction( )->byUri( 'http://example.com' ); // deny is the default
 
+        $media->addBacklink( 'http://www.backlink1.com' )
+            ->addBacklink( 'http://www.backlink2.com' )
+            ->addBacklink( 'http://www.backlink3.com' );
+
         $rendered = $feed->build( )->saveXml( );
 
         $this->assertTrue( strpos( $rendered, 'xmlns:media="http://search.yahoo.com/mrss' ) > -1 );
@@ -138,6 +142,8 @@ class MediaTest extends TestCase
         $this->assertEquals( 'full', $mediaAttributes[ 'expression' ] );
         $this->assertArrayHasKey( 'isDefault', $mediaAttributes );
         $this->assertEquals( 'true', $mediaAttributes[ 'isDefault' ] );
+
+        //print $feed;
 
         $doc = new \DOMDocument( );
 
@@ -308,6 +314,31 @@ class MediaTest extends TestCase
         $this->assertEquals(
             '00:45',
             $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneEndTime' )[ 0 ]->textContent
+        );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks' )->length
+        );
+        $this->assertEquals(
+            3,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink' )->length
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink[1]' )->length
+        );
+        $this->assertEquals(
+            'http://www.backlink1.com',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink[1]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'http://www.backlink2.com',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink[2]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'http://www.backlink3.com',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink[3]' )[ 0 ]->textContent
         );
 
         //print( $feed->build( )->saveXML( ) );

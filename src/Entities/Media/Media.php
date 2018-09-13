@@ -196,6 +196,13 @@ class Media extends Entity
     protected $scenes = [ ];
 
     /**
+     * Back links
+     *
+     * @var array
+     */
+    protected $backLinks = [ ];
+
+    /**
      * Convert this entity into an XML element
      *
      * @return \DOMElement
@@ -336,6 +343,13 @@ class Media extends Entity
             foreach( $this->scenes as $scene ) {
                 /** @var Scene $scene */
                 $scenes->appendChild( $scene->element( ) );
+            }
+        }
+
+        if ( count( $this->backLinks ) ) {
+            $backLinks = $media->appendChild( $this->createElement( 'media:backLinks' ) );
+            foreach( $this->backLinks as $backLink ) {
+                $backLinks->appendChild( $this->createElement( 'media:backLink', $backLink ) );
             }
         }
 
@@ -613,6 +627,18 @@ class Media extends Entity
         $scene = new Scene( $this->feed );
         $this->scenes[ ] = $scene;
         return $scene;
+    }
+
+    /**
+     * Add a back link
+     *
+     * @param string $link
+     * @return self
+     */
+    public function addBacklink( string $link ) : self
+    {
+        $this->backLinks[ ] = $link;
+        return $this;
     }
 
 }
