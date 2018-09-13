@@ -4,9 +4,9 @@ A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes.
 
 ## Features
 
-* Lightning Fast
-* Modern &mdash; uses PHP7
+* Modern (PHP7.1+)
 * Flexible; use it for syndication, media, podcasts...
+* Fast
 * Easy to extend
 * Supports custom namespaces
 * Full MediaRSS support
@@ -116,9 +116,9 @@ $channel->addItem( )
 
 ## Installation
 
-This package requires PHP 7+.
+This package requires PHP 7.1+.
 
-Install the packae using [Composer](https://getcomposer.org/):
+Install the package using [Composer](https://getcomposer.org/):
 
 ```
 composer require lukaswhite\php-feed-writer
