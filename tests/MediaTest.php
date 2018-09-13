@@ -118,7 +118,27 @@ class MediaTest extends TestCase
             ->addRating( 'r (cz 1 lz 1 nz 1 oz 1 vz 1)','urn:icra' )
             ->addRating( 'a-rating' );
 
+        $community = $media->addCommunity( );
+
+        $community->addStarRating( )
+            ->average( 3.5 )
+            ->count( 20 )
+            ->min( 1 )
+            ->max( 10 );
+
+        $community->addStatistics( )
+            ->views( 5 )
+            ->favorites( 3 );
+
+        $community->addTag( 'reuters' )
+            ->addTag( 'abc', 3 )
+            ->addTag( 'news', 5 )
+            ->addTag( 'opinions', 1 );
+
+
         $rendered = $feed->build( )->saveXml( );
+
+        //print $rendered;
 
         $this->assertTrue( strpos( $rendered, 'xmlns:media="http://search.yahoo.com/mrss' ) > -1 );
 
@@ -374,6 +394,60 @@ class MediaTest extends TestCase
             $xpath->query( '/rss/channel/item[1]/media:content/media:rating[3]' )[ 0 ]->getAttribute( 'scheme' )
         );
 
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:community' )->length
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:community/media:starRating' )->length
+        );
+        $this->assertEquals(
+            3.5,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:starRating' )[ 0 ]
+                ->getAttribute( 'average' )
+            );
+        $this->assertEquals(
+            20,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:starRating' )[ 0 ]
+                ->getAttribute( 'count' )
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:starRating' )[ 0 ]
+                ->getAttribute( 'min' )
+        );
+        $this->assertEquals(
+            10,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:starRating' )[ 0 ]
+                ->getAttribute( 'max' )
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:community/media:statistics' )->length
+        );
+        $this->assertEquals(
+            5,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:statistics' )[ 0 ]
+                ->getAttribute( 'views' )
+        );
+        $this->assertEquals(
+            3,
+            $xpath->query(
+                '/rss/channel/item[1]/media:content/media:community/media:statistics' )[ 0 ]
+                ->getAttribute( 'favorites' )
+        );
+        
+        $this->assertEquals(
+            'news:5, abc:3, opinions, reuters',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:community/media:tags' )[ 0 ]->textContent
+        );
         //print( $feed->build( )->saveXML( ) );
 
     }

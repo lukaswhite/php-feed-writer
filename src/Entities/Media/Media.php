@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities\Media;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
+use Lukaswhite\FeedWriter\Entities\Media\Community\Community;
 use Lukaswhite\FeedWriter\Exceptions\InvalidExpressionException;
 use Lukaswhite\FeedWriter\Exceptions\InvalidMediumException;
 use Lukaswhite\FeedWriter\Traits\HasDimensions;
@@ -210,6 +211,13 @@ class Media extends Entity
     protected $ratings = [ ];
 
     /**
+     * The community-related content
+     *
+     * @var Community
+     */
+    protected $community;
+
+    /**
      * Convert this entity into an XML element
      *
      * @return \DOMElement
@@ -365,6 +373,10 @@ class Media extends Entity
                 /** @var Rating $rating */
                 $media->appendChild( $rating->element( ) );
             }
+        }
+
+        if ( $this->community ) {
+            $media->appendChild( $this->community->element( ) );
         }
 
         return $media;
@@ -671,6 +683,17 @@ class Media extends Entity
         }
         $this->ratings[ ] = $rating;
         return $this;
+    }
+
+    /**
+     * Add community-related content
+     *
+     * @return Community
+     */
+    public function addCommunity( ) : Community
+    {
+        $this->community = new Community( $this->feed );
+        return $this->community;
     }
 
 }
