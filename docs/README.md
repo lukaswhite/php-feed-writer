@@ -4,7 +4,9 @@
 
 A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes.
 
-> **Important** &mdash; This is a work in progress
+[![Build Status](https://travis-ci.org/lukaswhite/php-feed-writer.svg?branch=master)](https://travis-ci.org/lukaswhite/php-feed-writer)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3a85bb8ef0af464382fb8acae9a6bd55)](https://www.codacy.com/app/lukaswhite/php-feed-writer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lukaswhite/php-feed-writer&amp;utm_campaign=Badge_Grade)
 
 ## Features
 
