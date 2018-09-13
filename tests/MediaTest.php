@@ -114,6 +114,10 @@ class MediaTest extends TestCase
             ->addBacklink( 'http://www.backlink2.com' )
             ->addBacklink( 'http://www.backlink3.com' );
 
+        $media->addRating( 'adult', 'urn:simple' )
+            ->addRating( 'r (cz 1 lz 1 nz 1 oz 1 vz 1)','urn:icra' )
+            ->addRating( 'a-rating' );
+
         $rendered = $feed->build( )->saveXml( );
 
         $this->assertTrue( strpos( $rendered, 'xmlns:media="http://search.yahoo.com/mrss' ) > -1 );
@@ -339,6 +343,35 @@ class MediaTest extends TestCase
         $this->assertEquals(
             'http://www.backlink3.com',
             $xpath->query( '/rss/channel/item[1]/media:content/media:backLinks/media:backLink[3]' )[ 0 ]->textContent
+        );
+
+        $this->assertEquals(
+            3,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating' )->length
+        );
+        $this->assertEquals(
+            'adult',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[1]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'urn:simple',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[1]' )[ 0 ]->getAttribute( 'scheme' )
+        );
+        $this->assertEquals(
+            'r (cz 1 lz 1 nz 1 oz 1 vz 1)',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[2]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'urn:icra',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[2]' )[ 0 ]->getAttribute( 'scheme' )
+        );
+        $this->assertEquals(
+            'a-rating',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[3]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            '',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:rating[3]' )[ 0 ]->getAttribute( 'scheme' )
         );
 
         //print( $feed->build( )->saveXML( ) );

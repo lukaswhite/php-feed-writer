@@ -203,6 +203,13 @@ class Media extends Entity
     protected $backLinks = [ ];
 
     /**
+     * The ratings
+     *
+     * @var array
+     */
+    protected $ratings = [ ];
+
+    /**
      * Convert this entity into an XML element
      *
      * @return \DOMElement
@@ -350,6 +357,13 @@ class Media extends Entity
             $backLinks = $media->appendChild( $this->createElement( 'media:backLinks' ) );
             foreach( $this->backLinks as $backLink ) {
                 $backLinks->appendChild( $this->createElement( 'media:backLink', $backLink ) );
+            }
+        }
+
+        if ( count( $this->ratings ) ) {
+            foreach( $this->ratings as $rating ) {
+                /** @var Rating $rating */
+                $media->appendChild( $rating->element( ) );
             }
         }
 
@@ -638,6 +652,24 @@ class Media extends Entity
     public function addBacklink( string $link ) : self
     {
         $this->backLinks[ ] = $link;
+        return $this;
+    }
+
+    /**
+     * Add a rating
+     *
+     * @param string $value
+     * @param string $scheme
+     * @return self
+     */
+    public function addRating( string $value, $scheme = null ) : self
+    {
+        $rating = new Rating( $this->feed );
+        $rating->value( $value );
+        if ( $scheme ) {
+            $rating->scheme( $scheme );
+        }
+        $this->ratings[ ] = $rating;
         return $this;
     }
 

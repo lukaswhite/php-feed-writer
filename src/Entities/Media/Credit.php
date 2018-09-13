@@ -34,30 +34,36 @@ class Credit extends Entity
     protected $scheme;
 
     /**
+     * Set the name
+     *
      * @param string $name
-     * @return Credit
+     * @return self
      */
-    public function name($name)
+    public function name( string $name ) : self
     {
         $this->name = $name;
         return $this;
     }
 
     /**
+     * Set the role
+     *
      * @param string $role
-     * @return Credit
+     * @return self
      */
-    public function role($role)
+    public function role( string $role ) : self
     {
         $this->role = $role;
         return $this;
     }
 
     /**
+     * Set the scheme
+     *
      * @param string $scheme
-     * @return Credit
+     * @return self
      */
-    public function scheme($scheme)
+    public function scheme( string $scheme ) : self
     {
         $this->scheme = $scheme;
         return $this;
