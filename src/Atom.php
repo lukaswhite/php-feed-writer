@@ -200,6 +200,16 @@ class Atom extends Feed
     }
 
     /**
+     * Get the MIME type used to deliver this feed.
+     *
+     * @return string
+     */
+    public function getMimeType( ) : string
+    {
+        return 'application/atom+xml';
+    }
+
+    /**
      * Build the feed
      *
      * @return \DOMDocument
@@ -214,6 +224,9 @@ class Atom extends Feed
         $feed->setAttribute('xmlns', 'http://www.w3.org/2005/Atom');
 
         $this->addNamespaces( $feed );
+
+        // If required, add the XSL stylesheet reference
+        $this->addXslStylesheet( );
 
         $this->addTitleElement( $feed );
 

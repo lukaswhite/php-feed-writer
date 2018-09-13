@@ -54,7 +54,7 @@ class AtomTest extends TestCase
             ->id( 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a' )
             ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
             ->published( new \DateTime( '2003-12-11T18:30:02Z' ) )
-            ->summary( 'robots and stuff' )
+            ->summary( 'robots and stuff', 'plain' )
             ->content( '<h1>Atom-Powered Robots Run Amok</h1><p>content here</p>', 'html', true );
 
         $entry->addAuthor( )
@@ -190,6 +190,12 @@ class AtomTest extends TestCase
             simplexml_load_file( __DIR__ .'/fixtures/atom-with-custom-element.xml' ),
             simplexml_load_string( $feed->toString( ) )
         ));
+    }
+
+    public function testGettingMimeType( )
+    {
+        $feed = new Atom( );
+        $this->assertEquals( 'application/atom+xml', $feed->getMimeType( ) );
     }
 
 }

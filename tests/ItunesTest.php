@@ -2,6 +2,7 @@
 
 namespace Lukaswhite\FeedWriter\Tests;
 
+use Lukaswhite\FeedWriter\Itunes;
 use Lukaswhite\FeedWriter\RSS2;
 
 class ItunesTest extends TestCase
@@ -207,6 +208,12 @@ class ItunesTest extends TestCase
         $this->assertEquals( 1, $xpath->query( '/rss/channel/item[1]/itunes:order' )->length );
         $this->assertEquals( '3', $xpath->query( '/rss/channel/item[1]/itunes:order' )[ 0 ]->textContent );
 
+    }
+
+    public function testGettingMimeType( )
+    {
+        $feed = new Itunes( );
+        $this->assertEquals( 'application/rss+xml', $feed->getMimeType( ) );
     }
 
 }

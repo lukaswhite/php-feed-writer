@@ -43,6 +43,23 @@ foreach( $posts as $post ) {
 }
 ```
 
+### RSS in Laravel
+
+```php
+$feed = new RSS2( );
+
+// ...
+
+return response( )->make(
+	$feed->toString( ),
+	200,
+	[
+		'Content-Type' => $feed->getMimeType( ),
+	]
+);
+
+```
+
 ### Atom
 
 ```php

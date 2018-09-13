@@ -16,6 +16,7 @@ class Text extends Entity
      */
     const PLAIN         =   'plain';
     const HTML          =   'html';
+    const XHTML         =   'xhtml';
 
     /**
      * The tag name; e.g. title, summary, content, rights

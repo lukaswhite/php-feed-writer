@@ -410,4 +410,10 @@ class Rss2Test extends TestCase
         );
     }
 
+    public function testGettingMimeType( )
+    {
+        $feed = new RSS2( );
+        $this->assertEquals( 'application/rss+xml', $feed->getMimeType( ) );
+    }
+
 }

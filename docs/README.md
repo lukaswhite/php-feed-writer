@@ -50,6 +50,23 @@ foreach( $posts as $post ) {
 print $feed;
 ```
 
+### RSS in Laravel
+
+```php
+$feed = new RSS2( );
+
+// ...
+
+return response( )->make(
+	$feed->toString( ),
+	200,
+	[
+		'Content-Type' => $feed->getMimeType( ),
+	]
+);
+
+```
+
 ### Atom
 
 ```php
@@ -408,6 +425,50 @@ $item->addEnclosure( )
 #### Adding Media
 
 Please see the section on MediaRSS.
+
+### Getting the Feed
+
+Once you've built a feed, you'll need to do something with it.
+
+Most commonly, you'll call `toString()` on the feed object which, as the name suggests, returns a string representation of the feed &mdash; i.e. a string of XML.
+
+```php
+print $feed->toString( );
+```
+
+Feeds also implement the magic `__toString()` method, so this is the same:
+
+```php
+print $feed->toString( );
+```
+
+You can specify that you want the result to be pretty-printed (formatted);
+
+```php
+$feed->prettyPrint( );
+print $feed->toString( );
+```
+
+If you wish to make any modifications to the feed XML before printing it, calling `build( )` will return an instance of `DomDocument`.
+
+Finally for convenience, the feeds all implement a method named `getMimeType()`  which returns the MIME type that you should use to deliver the feed over HTTP.
+
+```php
+$feed = new RSS2( );
+print $feed->getMimeType( ); // prints application/rss+xml
+```
+
+Here's a Laravel example:
+
+```php
+return response( )->make(
+	$feed->toString( ),
+	200,
+	[
+		'Content-Type' => $feed->getMimeType( ),
+	]
+);
+```
 
 ## Atom
 
@@ -802,6 +863,49 @@ Unlike RSS, where enclosures are presented by elements, in Atom an enclosure is 
 
 Namespaces work in exactly the same way as RSS, except that the default namespace for an Atom feed is set to `http://www.w3.org/2005/Atom`.
 
+### Getting the Feed
+
+Once you've built a feed, you'll need to do something with it.
+
+Most commonly, you'll call `toString()` on the feed object which, as the name suggests, returns a string representation of the feed &mdash; i.e. a string of XML.
+
+```php
+print $feed->toString( );
+```
+
+Feeds also implement the magic `__toString()` method, so this is the same:
+
+```php
+print $feed->toString( );
+```
+
+You can specify that you want the result to be pretty-printed (formatted);
+
+```php
+$feed->prettyPrint( );
+print $feed->toString( );
+```
+
+If you wish to make any modifications to the feed XML before printing it, calling `build( )` will return an instance of `DomDocument`.
+
+Finally for convenience, the feeds all implement a method named `getMimeType()`  which returns the MIME type that you should use to deliver the feed over HTTP.
+
+```php
+$feed = new Atom( );
+print $feed->getMimeType( ); // prints application/atom+xml
+```
+
+Here's a Laravel example:
+
+```php
+return response( )->make(
+	$feed->toString( ),
+	200,
+	[
+		'Content-Type' => $feed->getMimeType( ),
+	]
+);
+```
 
 ## MediaRSS
 

@@ -47,6 +47,16 @@ class RSS2 extends Feed
     }
 
     /**
+     * Get the MIME type used to deliver this feed.
+     *
+     * @return string
+     */
+    public function getMimeType( ) : string
+    {
+        return 'application/rss+xml';
+    }
+
+    /**
      * Build the feed
      *
      * @return \DOMDocument

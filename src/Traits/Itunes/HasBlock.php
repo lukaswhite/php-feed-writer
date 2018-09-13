@@ -26,7 +26,7 @@ trait HasBlock
      */
     public function block( $value = true ) : self
     {
-        $this->block = true;
+        $this->block = $value;
         return $this;
     }
 

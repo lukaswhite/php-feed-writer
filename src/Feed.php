@@ -155,6 +155,13 @@ abstract class Feed
     }
 
     /**
+     * Get the MIME type used to deliver this feed.
+     *
+     * @return string
+     */
+    abstract public function getMimeType( ) : string;
+
+    /**
      * Set the XSL stylesheet
      *
      * @param string $uri

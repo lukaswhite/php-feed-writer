@@ -43,7 +43,7 @@
       <uri>http://doe.com/john</uri>
     </contributor>
     <published>2003-12-11T18:30:02+00:00</published>
-    <summary>robots and stuff</summary>
+    <summary type="plain">robots and stuff</summary>
     <content type="html"><![CDATA[<h1>Atom-Powered Robots Run Amok</h1><p>content here</p>]]></content>
     <source>
       <id>http://example.org/</id>
