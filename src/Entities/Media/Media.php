@@ -189,6 +189,13 @@ class Media extends Entity
     protected $prices = [ ];
 
     /**
+     * The scenes
+     *
+     * @var array
+     */
+    protected $scenes = [ ];
+
+    /**
      * Convert this entity into an XML element
      *
      * @return \DOMElement
@@ -321,6 +328,14 @@ class Media extends Entity
             foreach( $this->prices as $price ) {
                 /** @var Price $price */
                 $media->appendChild( $price->element( ) );
+            }
+        }
+
+        if ( count( $this->scenes ) ) {
+            $scenes = $media->appendChild( $this->createElement( 'media:scenes' ) );
+            foreach( $this->scenes as $scene ) {
+                /** @var Scene $scene */
+                $scenes->appendChild( $scene->element( ) );
             }
         }
 
@@ -586,6 +601,18 @@ class Media extends Entity
         $price = new Price( $this->feed );
         $this->prices[ ] = $price;
         return $price;
+    }
+
+    /**
+     * Add a scene
+     *
+     * @return Scene
+     */
+    public function addScene( ) : Scene
+    {
+        $scene = new Scene( $this->feed );
+        $this->scenes[ ] = $scene;
+        return $scene;
     }
 
 }

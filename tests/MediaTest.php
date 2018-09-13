@@ -94,6 +94,18 @@ class MediaTest extends TestCase
             ->info( 'http://www.dummy.jp/package_info.html' )
             ->currency( 'EUR' );
 
+        $media->addScene( )
+            ->title( 'sceneTitle1' )
+            ->description( 'sceneDesc1' )
+            ->startTime( '00:15' )
+            ->endTime( '00:45' );
+
+        $media->addScene( )
+            ->title( 'sceneTitle2' )
+            ->description( 'sceneDesc2' )
+            ->startTime( '00:57' )
+            ->endTime( '01:45' );
+
         $media->addRestriction( )->allow( )->byCountry( 'au' );
         $media->addRestriction( )->onSharing( )->deny( );
         $media->addRestriction( )->byUri( 'http://example.com' ); // deny is the default
@@ -256,6 +268,47 @@ class MediaTest extends TestCase
         $this->assertEquals( 'package', $priceAttributes[ 'type' ] );
         $this->assertArrayHasKey( 'currency', $priceAttributes );
         $this->assertEquals( 'EUR', $priceAttributes[ 'currency' ] );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes' )->length
+        );
+        $this->assertEquals(
+            2,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene' )->length
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneTitle' )->length
+        );
+        $this->assertEquals(
+            'sceneTitle1',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneTitle' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneDescription' )->length
+        );
+        $this->assertEquals(
+            'sceneDesc1',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneDescription' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneStartTime' )->length
+        );
+        $this->assertEquals(
+            '00:15',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneStartTime' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneEndTime' )->length
+        );
+        $this->assertEquals(
+            '00:45',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:scenes/media:scene[1]/sceneEndTime' )[ 0 ]->textContent
+        );
 
         //print( $feed->build( )->saveXML( ) );
 
