@@ -177,6 +177,13 @@ class Media extends Entity
     protected $hashAlgorithm;
 
     /**
+     * The categories
+     *
+     * @var array
+     */
+    protected $categories = [ ];
+
+    /**
      * Comments on the media
      *
      * @var array
@@ -366,6 +373,16 @@ class Media extends Entity
                 $comments->appendChild( $this->createElement( 'media:comment', $comment ) );
             }
             $media->appendChild( $comments );
+        }
+
+        if ( count( $this->categories ) ) {
+            foreach( $this->categories as $category ) {
+                $media->appendChild( $category->element( ) );
+            }
+        }
+
+        if ( $this->copyright ) {
+            $media->appendChild( $this->copyright->element( ) );
         }
 
         if ( count( $this->credits ) ) {
@@ -687,6 +704,41 @@ class Media extends Entity
         }
         return $this;
     }
+
+    /**
+     * Add a category
+     *
+     * @return Category
+     */
+    public function addCategory( ) : Category
+    {
+        $category = new Category( $this->feed );
+        $this->categories[ ] = $category;
+        return $category;
+    }
+
+    /**
+     * Set the copyright notice
+     *
+     * @param string $text
+     * @param string $url
+     * @return self
+     */
+    public function copyright( string $text, ?string $url ) : self
+    {
+        $this->copyright = ( new Copyright( $this->feed ) )->text( $text );
+        if ( $url ){
+            $this->copyright->url( $url );
+        }
+        return $this;
+    }
+
+    /**
+     * An optional copyright notice
+     *
+     * @var Copyright
+     */
+    protected $copyright;
 
     /**
      * Add a credit

@@ -61,6 +61,7 @@ class MediaTest extends TestCase
                 ->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
                 ->keywords( 'monkeys', 'music', 'rock' )
                 ->hash( 'dfdec888b72151965a34b4b59031290a', 'md5' )
+                ->copyright( '2005 FooBar Media', 'http://blah.com/additional-info.html' )
                 ->comments(
                     'This is great',
                     'I like this'
@@ -70,6 +71,18 @@ class MediaTest extends TestCase
             ->name( 'John Doe')
             ->role( 'composer' )
             ->scheme( 'urn:ebu' );
+
+        $media->addCategory( )
+            ->term( 'music/artist/album/song' );
+
+        $media->addCategory( )
+            ->term( 'Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_ -_Pet_Detective' )
+            ->scheme( 'http://dmoz.org' )
+            ->label( 'Ace Ventura - Pet Detective' );
+
+        $media->addCategory( )
+            ->term( 'ycantpark mobile' )
+            ->scheme( 'urn:flickr:tags' );
 
         $media->addThumbnail( )
             ->url( 'http://www.webmonkey.com/images/monkeyrock-thumb.jpg' )
@@ -543,8 +556,48 @@ class MediaTest extends TestCase
             $xpath->query( '/rss/channel/item[1]/media:content/media:location/georss:where/gml:Point/gml:pos' )[ 0 ]->textContent
         );
 
+        $this->assertEquals(
+            3,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category' )->length
+        );
+        $this->assertEquals(
+            'music/artist/album/song',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[1]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_ -_Pet_Detective',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[2]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'Ace Ventura - Pet Detective',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[2]' )[ 0 ]->getAttribute( 'label' )
+        );
+        $this->assertEquals(
+            'http://dmoz.org',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[2]' )[ 0 ]->getAttribute( 'scheme' )
+        );
+        $this->assertEquals(
+            'ycantpark mobile',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[3]' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'urn:flickr:tags',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:category[3]' )[ 0 ]->getAttribute( 'scheme' )
+        );
 
-        //print( $feed->build( )->saveXML( ) );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:copyright' )->length
+        );
+        $this->assertEquals(
+            '2005 FooBar Media',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:copyright' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'http://blah.com/additional-info.html',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:copyright' )[ 0 ]->getAttribute( 'url' )
+        );
+
 
     }
 

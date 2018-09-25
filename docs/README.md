@@ -1057,9 +1057,37 @@ $media->hash( 'dfdec888b72151965a34b4b59031290a', 'md5' )
 
 #### Categories
 
-Media objects may have one or more categories. Categories may have an optional scheme.
+Media objects may have one or more [categories](http://www.rssboard.org/media-rss#media-category). Categories may have an optional scheme and / or label.
 
-_todo_
+Here are three examples:
+
+Just the term:
+
+```php
+$media->addCategory( )
+	->term( 'music/artist/album/song' );
+```
+
+> The default scheme is `http://search.yahoo.com/mrss/category_ schema`
+
+With a custom scheme:
+
+```php
+$media->addCategory( )
+	->term( 'ycantpark mobile' )
+	->scheme( 'urn:flickr:tags' );
+```
+
+With a scheme and a label:	
+
+```php
+$media->addCategory( )
+	->term( 'Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_ -_Pet_Detective' )
+	->scheme( 'http://dmoz.org' )
+	->label( 'Ace Ventura - Pet Detective' );
+```	
+
+            
 
 #### Status
 
@@ -1073,7 +1101,21 @@ $media->status( Status::BLOCKED, 'http://www.reasonforblocking.com' );
 
 #### Copyright Information
 
-_todo_
+To add a [copyright notice](http://www.rssboard.org/media-rss#media-copyright):
+
+```php
+$media->copyright( 'Copyright 2018 FooBar Media' );
+```
+
+You may optionally pass a URL as a second argument to either a terms of use page, or some additional information.
+
+```php
+$media->copyright( 
+	'Copyright 2018 Foo Bar Media',
+	'http://blah.com/additional-info.html'
+);
+```
+
 
 #### Dimensions
 
@@ -1157,6 +1199,8 @@ $media->addLocation( )
 	->lat( 51.5074 )
 	->lng( 0.1278 );
 ```	
+
+> Locations use the GeoRSS extension; the namespace gets registered for you automatically.
 
 #### Community-related Content
 
@@ -1461,9 +1505,11 @@ Hopefully that's enough for you to get started, should you need to extend it.
 
 ## References
 
+- [The RSS 2.0](https://cyber.harvard.edu/rss/rss.html) specification
 - [A Guide to Atom](https://validator.w3.org/feed/docs/atom.html)
 - The [MediaRSS](http://www.rssboard.org/media-rss) specification
 - [Podcast RSS iTunes](https://github.com/simplepie/simplepie-ng/wiki/Spec:-iTunes-Podcast-RSS) specification
 - The [GeoRSS Simple](http://www.georss.org/simple.html) specification
+- Information about the [Dublin Core](https://feedforall.com/macdocs/html/RSSReferenceDC.html) extension to RSS
 
 > End of documentation for now; it's a work-in-progress.
