@@ -67,6 +67,13 @@ class MediaTest extends TestCase
                     'I like this'
                 );
 
+        $media->responses(
+            'response1',
+            'response2'
+        );
+
+        $media->addResponse( 'response3' );
+
         $media->addCredit( )
             ->name( 'John Doe')
             ->role( 'composer' )
@@ -598,6 +605,22 @@ class MediaTest extends TestCase
             $xpath->query( '/rss/channel/item[1]/media:content/media:copyright' )[ 0 ]->getAttribute( 'url' )
         );
 
+        $this->assertEquals(
+            3,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:response' )->length
+        );
+        $this->assertEquals(
+            'response1',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:response' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'response2',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:response' )[ 1 ]->textContent
+        );
+        $this->assertEquals(
+            'response3',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:response' )[ 2 ]->textContent
+        );
 
     }
 

@@ -247,6 +247,13 @@ class Media extends Entity
     protected $ratings = [ ];
 
     /**
+     * The responses
+     *
+     * @var array
+     */
+    protected $responses = [ ];
+
+    /**
      * The community-related content
      *
      * @var Community
@@ -436,6 +443,12 @@ class Media extends Entity
             foreach( $this->ratings as $rating ) {
                 /** @var Rating $rating */
                 $media->appendChild( $rating->element( ) );
+            }
+        }
+
+        if ( count( $this->responses ) ) {
+            foreach( $this->responses as $response ) {
+                $media->appendChild( $this->createElement( 'media:response', $response ) );
             }
         }
 
@@ -843,6 +856,30 @@ class Media extends Entity
             $rating->scheme( $scheme );
         }
         $this->ratings[ ] = $rating;
+        return $this;
+    }
+
+    /**
+     * Add a response
+     *
+     * @param string $response
+     * @return self
+     */
+    public function addResponse( string $response ) : self
+    {
+        $this->responses[ ] = $response;
+        return $this;
+    }
+
+    /**
+     * Set multiple responses at a time
+     *
+     * @param ...string $responses
+     * @return self
+     */
+    public function responses( ...$responses ) : self
+    {
+        $this->responses = $responses;
         return $this;
     }
 
