@@ -163,6 +163,13 @@ class Media extends Entity
     protected $player;
 
     /**
+     * The embed
+     *
+     * @var Embed
+     */
+    protected $embed;
+
+    /**
      * The hash of the binary media file.
      *
      * @var string
@@ -364,6 +371,10 @@ class Media extends Entity
             $player = $this->createElement( 'media:player', null );
             $player->setAttribute( 'url', $this->player );
             $media->appendChild( $player );
+        }
+
+        if ( $this->embed ) {
+            $media->appendChild( $this->embed->element( ) );
         }
 
         if ( $this->hash ) {
@@ -688,6 +699,17 @@ class Media extends Entity
     {
         $this->player = $player;
         return $this;
+    }
+
+    /**
+     * Add an embed
+     *
+     * @return Embed
+     */
+    public function addEmbed( ) : Embed
+    {
+        $this->embed = new Embed( $this->feed );
+        return $this->embed;
     }
 
     /**

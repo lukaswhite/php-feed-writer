@@ -172,6 +172,20 @@ class MediaTest extends TestCase
             ->lat( 51.5074 )
             ->lng( 0.1278 );
 
+        $media->addEmbed( )
+            ->url( 'http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.2' )
+            ->width( 512 )
+            ->height( 323 )
+            ->params(
+                [
+                    'type'              =>  'application/x-shockwave-flash',
+                    'width'             =>  512,
+                    'height'            =>  323,
+                    'allowFullScreen'   =>  true,
+                    'flashVars'         =>
+                        'id=7809705&amp;vid=2666306&amp;lang=en-us&amp;intl=us&amp;thumbUrl=http%3A//us.i1.yimg.com/us.yimg.com/i/us/sch/cn/video06/2666306_rndf1e4205b_19.jpg'
+                ]
+            );
 
         $rendered = $feed->build( )->saveXml( );
 
@@ -620,6 +634,35 @@ class MediaTest extends TestCase
         $this->assertEquals(
             'response3',
             $xpath->query( '/rss/channel/item[1]/media:content/media:response' )[ 2 ]->textContent
+        );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed' )->length
+        );
+        $this->assertEquals(
+            'http://d.yimg.com/static.video.yahoo.com/yep/YV_YEP.swf?ver=2.2.2',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed' )[ 0 ]->getAttribute( 'url' )
+        );
+        $this->assertEquals(
+            '512',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed' )[ 0 ]->getAttribute( 'width' )
+        );
+        $this->assertEquals(
+            '323',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed' )[ 0 ]->getAttribute( 'height' )
+        );
+        $this->assertEquals(
+            5,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed/media:param' )->length
+        );
+        $this->assertEquals(
+            'type',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed/media:param[1]' )[ 0 ]->getAttribute( 'name' )
+        );
+        $this->assertEquals(
+            'application/x-shockwave-flash',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:embed/media:param[1]' )[ 0 ]->textContent
         );
 
     }

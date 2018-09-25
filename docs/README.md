@@ -34,20 +34,20 @@ $feed = new RSS2( );
 $channel = $feed->addChannel( );
 
 $channel
-	->title( 'My Blog' )
-	->description( 'My personal blog' )
-	->link( 'https://example.com' )
-	->lastBuildDate( new \DateTime( ) )
-	->pubDate( new \DateTime( ) )
-	->language( 'en-US' );
+    ->title( 'My Blog' )
+    ->description( 'My personal blog' )
+    ->link( 'https://example.com' )
+    ->lastBuildDate( new \DateTime( ) )
+    ->pubDate( new \DateTime( ) )
+    ->language( 'en-US' );
 
 foreach( $posts as $post ) {
-	$channel->addItem( )
-		->title( $post->title )
-		->description( $post->description )
-		->link( $post->url )
-		->pubDate( $post->publishedAt )
-		->guid( $post->url, true );
+    $channel->addItem( )
+        ->title( $post->title )
+        ->description( $post->description )
+        ->link( $post->url )
+        ->pubDate( $post->publishedAt )
+        ->guid( $post->url, true );
 }
 
 print $feed;
@@ -61,11 +61,11 @@ $feed = new RSS2( );
 // ...
 
 return response( )->make(
-	$feed->toString( ),
-	200,
-	[
-		'Content-Type' => $feed->getMimeType( ),
-	]
+    $feed->toString( ),
+    200,
+    [
+        'Content-Type' => $feed->getMimeType( ),
+    ]
 );
 
 ```
@@ -76,15 +76,15 @@ return response( )->make(
 $feed = new \Lukaswhite\FeedWriter\Atom( );
 
 $feed->title( 'Example Feed' )
-	->link( 'http://example.org/' )
-	->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
-	->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' );
-	
+    ->link( 'http://example.org/' )
+    ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) )
+    ->id( 'urn:uuid:60a76c80-d399-11d9-b93C-0003939e0af6' );
+    
 foreach( $posts as $post ) {
-	$feed->addEntry( )
-		->title( $post->title )
-		->id( $post->id )
-		->updated( $post->updatedAt );
+    $feed->addEntry( )
+        ->title( $post->title )
+        ->id( $post->id )
+        ->updated( $post->updatedAt );
 }
 
 print $feed;
@@ -187,7 +187,9 @@ To unregister a namespace &mdash; for example, if for whatever reason you don't 
 $channel->unregisterNamespace( 'content' );
 ```
 
-Note that the Atom and Media namespaces are automatically added by this class when you add an atom link or some media respectively.
+Note that when you add an Atom link then the appropriate namespace is automatically added, and likewise media, GeoRSS or Dublin Core elements.
+
+Of course, you're free to add [your own custom namespaces](https://www.disobey.com/detergent/2002/extendingrss2/).
 
 ### Creating a Channel
 
@@ -197,15 +199,19 @@ A call to `addChanel` creates a new channel, adds it to the feed and returns it.
 $channel = $feed->addChannel( );
 ```
 
-From there, the `Channel` class provides a number of methods for settings its attributes using a fluent interface.
+From there, the `Channel` class provides a number of methods for settings its attributes using a predominantly fluent interface.
 
 #### Setting a Channel's Title
+
+To set the title of the channel (required):
 
 ```php
 $channel->title( 'My Blog' );
 ```
 
 #### Setting a Channel's Description
+
+To set a description of the channel:
 
 ```php
 $channel->description( 'My personal blog' );
@@ -215,11 +221,15 @@ If you want the description to be character encoded &mdash; i.e. wrapped in a `C
 
 #### Setting a Channel's Link
 
+To specify a link for the channel:
+
 ```php
 $channel->link( 'https://example.com' );
 ```
 
 #### Setting a Channel's Language
+
+Set the language like this:
 
 ```php
 $channel->language( 'en-GB' );
@@ -227,12 +237,15 @@ $channel->language( 'en-GB' );
 
 #### Setting a Channel's Copyright Notice
 
+Add a copyright notice as follows:
+
 ```php
 $channel->copyright( 'Copyright 2018 Me' );
 ```
 
 #### Setting a Channel's Last Build Date
 
+To specify when the channel was last built, pass an instance of `\DateTime`:
 
 ```php
 $channel->lastBuildDate( new \DateTime( ) );
@@ -241,6 +254,8 @@ $channel->lastBuildDate( new \DateTime( ) );
 > If you use the excellent [Carbon](https://carbon.nesbot.com/docs/) library then, since it's an extension of `\DateTime`, you can simply pass an instance of that. It's not a required package, however.
 
 #### Setting a Channel's Published Date
+
+To specify when the channel was published, pass an instance of `\DateTime`:
 
 ```php
 $channel->pubDate( new \DateTime( ) );
@@ -266,9 +281,9 @@ The second argument is optional, so the previous example can be re-written as fo
 
 ```php
 $channel
-	->addCategory( 'PHP' )
-	->addCategory( 'development' )
-	->addCategory( 'programming' );
+    ->addCategory( 'PHP' )
+    ->addCategory( 'development' )
+    ->addCategory( 'programming' );
 ```
 
 #### Adding Links
@@ -277,10 +292,10 @@ You can add a link to the feed like this:
 
 ```php
 $channel->addLink(
-	'atom:link',
-	'https://example.com/feed.xml',
-	'self', // the rel attribute
-	'application/atom+xml'
+    'atom:link',
+    'https://example.com/feed.xml',
+    'self', // the rel attribute
+    'application/atom+xml'
 );
 ```
 
@@ -304,10 +319,10 @@ If you need more flexibility, just use `addLink` directly. For example the line 
 
 ```php
 $this->addLink(
-	'atom:link',
-	'http://pubsubhubbub.appspot.com',
-	'hub'
-);	
+    'atom:link',
+    'http://pubsubhubbub.appspot.com',
+    'hub'
+);    
 ```
 
 #### Adding Images
@@ -316,14 +331,14 @@ You can add an image to a channel by calling `addImage()`:
 
 ```php
 ->addImage( )
-	->url( 'http://example.com/image.jpeg' )
-	->link( 'http://example.com' )
-	->title( 'An example image')
-	->width( 200 )
-	->height( 150 );
+    ->url( 'http://example.com/image.jpeg' )
+    ->link( 'http://example.com' )
+    ->title( 'An example image')
+    ->width( 200 )
+    ->height( 150 );
 ```
 
-> You can also add images using MediaRSS.
+> You can also add images using MediaRSS, which provides a whole host more options. Which one you choose, however, may ultimately come down to the constraints on the feed readers that you anticipate will read your feed.
 
 #### Setting the Generator
 
@@ -333,7 +348,7 @@ The generator specifies the software used to generate the feed:
 $channel->generator( 'PHP Feed Writer (https://github.com/lukaswhite/php-feed-writer)' )
 ```
 
-If you find this package useful, please consider setting it!
+> If you find this package useful, please consider setting this accordingly!
 
 #### Other Channel Properties
 
@@ -341,12 +356,12 @@ There are a few other miscellaneous properties of the channel object [defined in
 
 ```php
 $channel->author( 'author@example.com' )
-	->webmaster( 'webmaster@example.com' )
-	->managingEditor( 'editor@example.com (the editor)' )
-	->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' )
-	->skipDays( 'Saturday', 'Sunday' )
-	->skipHours( 0, 1, 2, 3, 4 )
-	->ttl( 60 );
+    ->webmaster( 'webmaster@example.com' )
+    ->managingEditor( 'editor@example.com (the editor)' )
+    ->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' )
+    ->skipDays( 'Saturday', 'Sunday' )
+    ->skipHours( 0, 1, 2, 3, 4 )
+    ->ttl( 60 );
 ```
 
 > Note that the `author`, `webmaster` and `managingEditor` elements must contain an e-mail address, not just a name.
@@ -359,36 +374,44 @@ To add an item to the channel, call `addItem()`. This creates a new instance, at
 
 #### Setting the Item's title
 
+To set the all-important title of an item:
+
 ```php
 $channel->addItem( )
-	->title( 'A Blog Post' );
-```	
+    ->title( 'A Blog Post' );
+```    
 
 #### Setting the Item's description
 
+You can provide a description of an item like this:
+
 ```php
 $item->description( 'Just a post, on a blog' );
-```	
+```    
 
 > This behaves in the same way as the channel descripton with respect to character encoding; see the section on that for details.
 
 #### Setting the Item's Link
 
+You'll need to provide a link to the item:
+
 ```php
 $item->link( 'http://example.com/blog/post-1.html' )
-```	
+```    
 
 #### Setting the GUID of the Item
 
+All items must have a GUID (Globally Unique Identifier), for example in the form of a URI. In the case of a blog post, this will simply be a link to the post in question.
+
 ```php
 $item->guid( 'http://example.com/blog/post-1.html' )
-```	
+```    
 
-If the GUID is a permalink, pass true as the second argument:
+If the GUID is a permalink, pass `true` as the second argument:
 
 ```php
 $item$entry->guid( 'http://example.com/blog/post-1.html' )
-```	
+```    
 
 The result will be:
 
@@ -398,21 +421,23 @@ The result will be:
 
 #### Setting Item's Published Date
 
+Pass an instance of `\DateTime` to specify when an item was published.
+
 ```php
 $item->pubDate( new \DateTime( '2018-09-07 09:30' ) );
 ```
 
 #### Setting the Content of an Item
 
-RSS2.0 allows you to incoporate the full content of an item; for example the whole of a blog post. 
+RSS2.0 allows you to incoporate the full content of an item; for example the whole of a blog post.
 
-You can add this as follows:
+If you're incoporating HTML content, then that would go in the encoded content, which you can add this as follows:
 
 ```php
 $item->encodedContent( '<p>The content of the item</p>' );
 ```
 
-> Fro the spec; "the content MUST be suitable for presentation as HTML"
+> From the spec; "the content MUST be suitable for presentation as HTML"
 
 #### Adding Enclosures
 
@@ -420,10 +445,12 @@ To add an enclosure; for example a link to an item of audio:
 
 ```php
 $item->addEnclosure( )
-	->url( 'http://example.com/audio.mp3' )
-	->length( 1000 )
-	->type( 'audio/mpeg' );
-```	
+    ->url( 'http://example.com/audio.mp3' )
+    ->length( 1000 )
+    ->type( 'audio/mpeg' );
+```    
+
+> MediaRSS, described later, provides another way to do this but with a larger range of parameters and additional information. The decision as to which to use may come down to the limitations or features of the feed readers that ultimately consume your feeds.
 
 #### Adding Media
 
@@ -442,7 +469,7 @@ print $feed->toString( );
 Feeds also implement the magic `__toString()` method, so this is the same:
 
 ```php
-print $feed->toString( );
+print $feed;
 ```
 
 You can specify that you want the result to be pretty-printed (formatted);
@@ -461,15 +488,15 @@ $feed = new RSS2( );
 print $feed->getMimeType( ); // prints application/rss+xml
 ```
 
-Here's a Laravel example:
+Here's a Laravel example of returning a feed, setting the appropriate header:
 
 ```php
 return response( )->make(
-	$feed->toString( ),
-	200,
-	[
-		'Content-Type' => $feed->getMimeType( ),
-	]
+    $feed->toString( ),
+    200,
+    [
+        'Content-Type' => $feed->getMimeType( ),
+    ]
 );
 ```
 
@@ -535,9 +562,9 @@ Once you have that instance you can set the name, e-mail address or / and a URI 
 
 ```php
 $feed->addAuthor( )
-	->name( 'John Doe' )
-	->email( 'john@doe.com' )
-	->uri( 'http://doe.com/john' );
+    ->name( 'John Doe' )
+    ->email( 'john@doe.com' )
+    ->uri( 'http://doe.com/john' );
 ```
 
 #### Feed Links
@@ -548,25 +575,25 @@ You should add a link back to the feed itself:
 
 ```php
 $feed
-	->addLink( )
-		->url( '/feed' )
-		->rel( 'self' );
-```		
+    ->addLink( )
+        ->url( '/feed' )
+        ->rel( 'self' );
+```        
 
 Or use the short-cut method:
 
 ```php
 $feed->addLinkToSelf( 'http://example.org/feed' )
 ```
-		
+        
 To add a link to a related webpage, you might do this:
 
 ```php
 $feed
-	->addLink( )
-		->url( 'http://www.example.com' )
-		->rel( 'alternate' );
-```		
+    ->addLink( )
+        ->url( 'http://www.example.com' )
+        ->rel( 'alternate' );
+```        
 
 ### Optional Feed Elements
 
@@ -582,16 +609,16 @@ Here's the method at its simplest:
 
 ```php
 $feed->addCategory( )
-	->term( 'example' );
+    ->term( 'example' );
 ```
 
 A category may also have a `scheme` and/or a `label`:
 
 ```php
 $feed->addCategory( )
-	->term( 'example' )
-	->scheme( 'http://example.com/categories/')
-	->label( 'An example' );	
+    ->term( 'example' )
+    ->scheme( 'http://example.com/categories/')
+    ->label( 'An example' );    
 ```
 
 #### Contributor(s) to a Feed
@@ -602,12 +629,12 @@ To illustrate with an example:
 
 ```php
 $feed->addContributor( )
-	->name( 'Jane Doe' )
-	->email( 'jane@doe.com' )
-	->uri( 'http://doe.com/jane' );
+    ->name( 'Jane Doe' )
+    ->email( 'jane@doe.com' )
+    ->uri( 'http://doe.com/jane' );
 ```
 
-#### The Generator	
+#### The Generator    
 
 The generator is the software used to generate the feed, and in addition to a name may specify a related URI and / or a version number.
 
@@ -621,9 +648,9 @@ Including a URI and version:
 
 ```php
 $feed->generator(
-	'PHP Feed Writer',
-	'https://github.com/lukaswhite/php-feed-writer',
-	'1.0' 
+    'PHP Feed Writer',
+    'https://github.com/lukaswhite/php-feed-writer',
+    '1.0' 
 );
 ```            
 
@@ -737,9 +764,9 @@ You can specify one or more authors of an entry in exactly the same way as for f
 
 ```php
 $entry->addAuthor( )
-	->name( 'John Doe' )
-	->email( 'john@doe.com' )
-	->uri( 'http://doe.com/john' );
+    ->name( 'John Doe' )
+    ->email( 'john@doe.com' )
+    ->uri( 'http://doe.com/john' );
 ```
 
 #### Content
@@ -766,8 +793,8 @@ Here's a simple example:
 
 ```php
 $entry
-	->addLink( )
-	->url( 'http://example.org/2003/12/13/atom03' );
+    ->addLink( )
+    ->url( 'http://example.org/2003/12/13/atom03' );
 ```
 
 You may also use the `rel()`, `type()` and `language()` methods if you wish.
@@ -798,16 +825,16 @@ At its simplest:
 
 ```php
 $entry->addCategory( )
-	->term( 'example' );
+    ->term( 'example' );
 ```
 
 Adding additional information about the category:
 
 ```php
 $entry->addCategory( )
-	->term( 'example' )
-	->scheme( 'http://example.com/categories/')
-	->label( 'An example' );
+    ->term( 'example' )
+    ->scheme( 'http://example.com/categories/')
+    ->label( 'An example' );
 ```
 
 #### The Publication Date
@@ -844,9 +871,9 @@ To add a source:
 
 ```php
 $entry->addSource( )
-	->id( 'http://example.org/' )
-	->title( 'Example, Inc.' )
-	->updated( new \DateTime( '2003-12-13T18:30:02Z' ) );
+    ->id( 'http://example.org/' )
+    ->title( 'Example, Inc.' )
+    ->updated( new \DateTime( '2003-12-13T18:30:02Z' ) );
 ```
 
 ### Adding Enclosures to Atom Entries
@@ -855,13 +882,13 @@ To add an enclosure to an Atom entry:
 
 ```php
 $entry->addEnclosure( )
-	->url( 'http://example.com/audio.mp3' )
-	->length( 1000 )
-	->type( 'audio/mpeg' );
+    ->url( 'http://example.com/audio.mp3' )
+    ->length( 1000 )
+    ->type( 'audio/mpeg' );
 ```
 
-Unlike RSS, where enclosures are presented by elements, in Atom an enclosure is actually a `<link>` that points to the fie in question, but with the `rel` attribute set to `enclosure`.	
-		
+Unlike RSS, where enclosures are presented by elements, in Atom an enclosure is actually a `<link>` that points to the fie in question, but with the `rel` attribute set to `enclosure`.    
+        
 ### Feed Namespaces
 
 Namespaces work in exactly the same way as RSS, except that the default namespace for an Atom feed is set to `http://www.w3.org/2005/Atom`.
@@ -902,11 +929,11 @@ Here's a Laravel example:
 
 ```php
 return response( )->make(
-	$feed->toString( ),
-	200,
-	[
-		'Content-Type' => $feed->getMimeType( ),
-	]
+    $feed->toString( ),
+    200,
+    [
+        'Content-Type' => $feed->getMimeType( ),
+    ]
 );
 ```
 
@@ -961,10 +988,10 @@ In the following example, we're adding a video to an RSS item:
 
 ```php
 $media = $item->addMedia( )
-	->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
-	->medium( Media::VIDEO )
-	->fileSize( 2471632 )
-	->type( 'video/mpeg' );
+    ->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
+    ->medium( Media::VIDEO )
+    ->fileSize( 2471632 )
+    ->type( 'video/mpeg' );
 );
 ```
 
@@ -974,25 +1001,25 @@ In this example, we're adding a whole raft of additional information about a vid
 
 ```php
 $media = $item->addMedia( )
-	->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
-	->fileSize( 2471632 )
-	->type( 'video/mpeg' )
-	->title( 'The Webmonkey Band "Monkey Rock"' )
-	->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
-	->keywords( 'monkeys', 'music', 'rock' )
-	->width( 320 )
-	->height( 240 )
-	->duration( 147 )
-	->medium( Media::VIDEO )
-	->expression( Media::FULL )
-	->bitrate( 128 )
-	->framerate( 24 )
-	->isDefault( )
-	->player( 'http://www.somevideouploadsite/webmonkey.html' )
-	->hash( 'dfdec888b72151965a34b4b59031290a', 'md5' )
-	->comments(
-		'This is great',
-		'I like this'
+    ->url( 'http://www.webmonkey.com/monkeyrock.mpg' )
+    ->fileSize( 2471632 )
+    ->type( 'video/mpeg' )
+    ->title( 'The Webmonkey Band "Monkey Rock"' )
+    ->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
+    ->keywords( 'monkeys', 'music', 'rock' )
+    ->width( 320 )
+    ->height( 240 )
+    ->duration( 147 )
+    ->medium( Media::VIDEO )
+    ->expression( Media::FULL )
+    ->bitrate( 128 )
+    ->framerate( 24 )
+    ->isDefault( )
+    ->player( 'http://www.somevideouploadsite/webmonkey.html' )
+    ->hash( 'dfdec888b72151965a34b4b59031290a', 'md5' )
+    ->comments(
+        'This is great',
+        'I like this'
 );
 ```
 
@@ -1014,7 +1041,7 @@ Let's also set the MIME type and file size;
 
 ```php
 $media->type( 'video/mpeg' )
-	->filesize( 2471632 );
+    ->filesize( 2471632 );
 ```
 
 We should also set the medium; that just specifies whether it's a video, image, audio, a document or an executable.
@@ -1027,27 +1054,27 @@ $media->medium( Media::VIDEO );
 
 #### Text-based Metadata
 
-Media may also have a title, description and keywords:
+Media may also have a [title](http://www.rssboard.org/media-rss#media-title), [description](http://www.rssboard.org/media-rss#media-description) and [keywords](http://www.rssboard.org/media-rss#media-keywords):
 
 ```php
 $media
-	->title( 'The Webmonkey Band "Monkey Rock"' )
-	->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the Fillmore Auditorium.' )
-	->keywords( 'monkeys', 'music', 'rock' );
+    ->title( 'The Webmonkey Band "Monkey Rock"' )
+    ->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the Fillmore Auditorium.' )
+    ->keywords( 'monkeys', 'music', 'rock' );
 ```
 
 Note that the description also supports HTML, provided you pass `html` as the optional second argument:
 
 ```php
 $media
-	->title( 'The Webmonkey Band "Monkey Rock"' )
-	->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
-	->keywords( 'monkeys', 'music', 'rock' );
+    ->title( 'The Webmonkey Band "Monkey Rock"' )
+    ->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
+    ->keywords( 'monkeys', 'music', 'rock' );
 ```
 
 #### The Hash
 
-You may provide a hash for the binary media file. By default it's assumed that it's an `md5` hash, but `sha-1` is also supported; simply pass that as the second argument.
+You may provide a [hash](http://www.rssboard.org/media-rss#media-hash) for the binary media file. By default it's assumed that it's an `md5` hash, but `sha-1` is also supported; simply pass that as the second argument.
 
 ```php
 $media->hash( 'dfdec888b72151965a34b4b59031290a' )
@@ -1065,7 +1092,7 @@ Just the term:
 
 ```php
 $media->addCategory( )
-	->term( 'music/artist/album/song' );
+    ->term( 'music/artist/album/song' );
 ```
 
 > The default scheme is `http://search.yahoo.com/mrss/category_ schema`
@@ -1074,24 +1101,24 @@ With a custom scheme:
 
 ```php
 $media->addCategory( )
-	->term( 'ycantpark mobile' )
-	->scheme( 'urn:flickr:tags' );
+    ->term( 'ycantpark mobile' )
+    ->scheme( 'urn:flickr:tags' );
 ```
 
-With a scheme and a label:	
+With a scheme and a label:    
 
 ```php
 $media->addCategory( )
-	->term( 'Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_ -_Pet_Detective' )
-	->scheme( 'http://dmoz.org' )
-	->label( 'Ace Ventura - Pet Detective' );
-```	
+    ->term( 'Arts/Movies/Titles/A/Ace_Ventura_Series/Ace_Ventura_ -_Pet_Detective' )
+    ->scheme( 'http://dmoz.org' )
+    ->label( 'Ace Ventura - Pet Detective' );
+```    
 
             
 
 #### Status
 
-The status of a media item can be one of `active`, `blocked` or `deleted`. When you define the status, you're also expected to provide a reason. The reason can be in the form of a short piece of text, or a URL to a page that describes the reason.
+The [status](http://www.rssboard.org/media-rss#media-status) of a media item can be one of `active`, `blocked` or `deleted`. When you define the status, you're also expected to provide a reason. The reason can be in the form of a short piece of text, or a URL to a page that describes the reason.
 
 For example, to indicate that the media item is blocked:
 
@@ -1111,8 +1138,8 @@ You may optionally pass a URL as a second argument to either a terms of use page
 
 ```php
 $media->copyright( 
-	'Copyright 2018 Foo Bar Media',
-	'http://blah.com/additional-info.html'
+    'Copyright 2018 Foo Bar Media',
+    'http://blah.com/additional-info.html'
 );
 ```
 
@@ -1123,18 +1150,18 @@ It's a good idea to supply dimensions, assuming it's a video or audio.
 
 ```php
 $media->width( 320 )
-	->height( 240 );
+    ->height( 240 );
 ```
 
-#### Duration, Bit-rate and Frame rate	
+#### Duration, Bit-rate and Frame rate    
 Obviously these may not be relevant, depending the the type of media.
 
 ```php
 $media
-	->duration( 147 )
-	->bitrate( 128 )
-	->framerate( 24 );
-```	
+    ->duration( 147 )
+    ->bitrate( 128 )
+    ->framerate( 24 );
+```    
 
 #### The Expression
 
@@ -1156,7 +1183,7 @@ $media->expression( Media::NONSTOP );
 
 #### Credits
 
-You can add credits to a media item with `addCredit()`. This returns an instance of `Credit` onto which you can attach the entity being credited (e.g. a person or company), the role that entity played and an optional scheme. 
+You can add [credits](http://www.rssboard.org/media-rss#media-credit) to a media item with `addCredit()`. This returns an instance of `Credit` onto which you can attach the entity being credited (e.g. a person or company), the role that entity played and an optional scheme. 
 
 The default scheme is `urn:ebu`, which refers to the European Broadcasting Union Role Codes; for example `actor`, `composer`, `choreographer`, `graphic designer` etc.
 
@@ -1164,14 +1191,14 @@ Here's an example:
 
 ```php
 $media->addCredit( )
-	->name( 'John Doe')
-	->role( 'composer' )
-	->scheme( 'urn:ebu' );
+    ->name( 'John Doe')
+    ->role( 'composer' )
+    ->scheme( 'urn:ebu' );
 ```
 
 #### Thumbnails
 
-You can attach thumbnails to a video. You can have multiple thumbnails, these can be associated with particular points in the video.
+You can attach [thumbnails](http://www.rssboard.org/media-rss#media-thumbnails) to a video. You can have multiple thumbnails, these can be associated with particular points in the video.
 
 > If time coding is not in play, it's assumed that the thumbnails are in order of importance.
 
@@ -1179,10 +1206,10 @@ Here's an example:
 
 ```php
 $media->addThumbnail( )
-	->url( 'http://www.webmonkey.com/images/monkeyrock-thumb.jpg' )
-	->width( 145 )
-	->height( 98 )
-	->time( '12:34' );
+    ->url( 'http://www.webmonkey.com/images/monkeyrock-thumb.jpg' )
+    ->width( 145 )
+    ->height( 98 )
+    ->time( '12:34' );
 ```
 
 #### Locations
@@ -1193,18 +1220,18 @@ For example, suppose you have a movie, and after the opening credits there's a f
 
 ```php
 $media->addLocation( )
-	->description( 'London, UK' )
-	->startTime( '03:00' )
-	->endTime( '08:00' )
-	->lat( 51.5074 )
-	->lng( 0.1278 );
-```	
+    ->description( 'London, UK' )
+    ->startTime( '03:00' )
+    ->endTime( '08:00' )
+    ->lat( 51.5074 )
+    ->lng( 0.1278 );
+```    
 
 > Locations use the GeoRSS extension; the namespace gets registered for you automatically.
 
 #### Community-related Content
 
-You can attach three types of community-related content:
+You can attach three types of [community-related content](http://www.rssboard.org/media-rss#media-community):
 
 1. Star ratings
 2. Statistics; i.e. the number of views and/or "favorites"
@@ -1216,19 +1243,19 @@ Here's an example:
 $community = $media->addCommunity( );
 
 $community->addStarRating( )
-	->average( 3.5 )
-	->count( 20 )
-	->min( 1 )
-	->max( 10 );
+    ->average( 3.5 )
+    ->count( 20 )
+    ->min( 1 )
+    ->max( 10 );
 
 $community->addStatistics( )
-	->views( 5 )
-	->favorites( 3 );
+    ->views( 5 )
+    ->favorites( 3 );
 
 $community->addTag( 'reuters' )
-	->addTag( 'abc', 3 )
-	->addTag( 'news', 5 )
-	->addTag( 'opinions', 1 );
+    ->addTag( 'abc', 3 )
+    ->addTag( 'news', 5 )
+    ->addTag( 'opinions', 1 );
 ```
 
 The second argument to `addTag()` is the weight. This might be, for example, the number of users who have assigned that particular tag; the default being 1. 
@@ -1237,7 +1264,7 @@ The second argument to `addTag()` is the weight. This might be, for example, the
 
 #### Restrictions
 
-You can attach restrictions onto media.
+You can attach [restrictions](http://www.rssboard.org/media-rss#media-restriction) onto media.
 
 > This element is purely informational and no obligation can be assumed or implied
 
@@ -1263,7 +1290,7 @@ $media->addRestriction( )->byUri( 'http://example.com' );
 
 #### Ratings
 
-Not to be confused with star ratings, which come under community content, ratings are used to specify the permissable audience. Think `R` vs `PG-13` in the context of movies.
+Not to be confused with star ratings, which come under community content, [ratings](http://www.rssboard.org/media-rss#media-rating) are used to specify the permissable audience. Think `R` vs `PG-13` in the context of movies.
 
 Ratings may have an optional scheme.
 
@@ -1276,10 +1303,12 @@ $media->addRating( 'adult', 'urn:simple' );
 
 $media->addRating( 'r (cz 1 lz 1 nz 1 oz 1 vz 1)','urn:icra' );
 ```
+
+> Earlier versions of the MediaRSS specification included a `media:adult` element, but it's been deprecated in favor of the more flexible rating element. As such, only the latter is implemented here.
             
 #### Text
 
-You may attach text to a media item. These can also be associated with periods in the media. For example a transcript, closed captions or the lyrics of a song.
+You may attach [text](http://www.rssboard.org/media-rss#media-text) to a media item. These can also be associated with periods in the media. For example a transcript, closed captions or the lyrics of a song.
 
 > For transcripts it is encouraged, but not required, that the elements be grouped by language and appear in time sequence order based on the start time.
 
@@ -1287,30 +1316,46 @@ Here are a couple of examples:
 
 ```php
 $media->addText( )
-	->content( 'Oh, say, can you see' )
-	->language( 'en' )
-	->start( '00:00:03.000' )
-	->end( '00:00:10.000' );
+    ->content( 'Oh, say, can you see' )
+    ->language( 'en' )
+    ->start( '00:00:03.000' )
+    ->end( '00:00:10.000' );
 
 $media->addText( )
-	->content( 'By the dawn\'s early <strong>light</strong>', 'html' )
-	->language( 'en' )
-	->start( '00:00:10.000' )
-	->end( '00:00:17.000' );
-```	
+    ->content( 'By the dawn\'s early <strong>light</strong>', 'html' )
+    ->language( 'en' )
+    ->start( '00:00:10.000' )
+    ->end( '00:00:17.000' );
+```    
 
 #### Scenes
 
-You may also define scenes within a media item. These have four optional properties; the title, description, and start and end times.
+You may also define [scenes](http://www.rssboard.org/media-rss#media-scenes) within a media item. These have four optional properties; the title, description, and start and end times.
 
 For example:
 
 ```php
 $media->addScene( )
-	->title( 'sceneTitle1' )
-	->description( 'sceneDesc1' )
-	->startTime( '00:15' )
-	->endTime( '00:45' );
+    ->title( 'sceneTitle1' )
+    ->description( 'sceneDesc1' )
+    ->startTime( '00:15' )
+    ->endTime( '00:45' );
+```
+
+#### Comments
+
+To add [comments](http://www.rssboard.org/media-rss#media-comments) that the media as received:
+
+```php
+$media->comments( 'comment1', 'comment2', 'comment3' );
+```
+
+#### Responses
+
+To list the [responses](http://www.rssboard.org/media-rss#media-responses) that the media has received:
+
+```php
+$media->responses( 'response1', 'response1', 'response1' );
 ```
 
 #### Peer Link
@@ -1327,11 +1372,11 @@ To add [back links](http://www.rssboard.org/media-rss#media-backlinks); that's t
 
 ```php
 $media->addBacklink( 'http://www.backlink1.com' )
-	->addBacklink( 'http://www.backlink2.com' )
-	->addBacklink( 'http://www.backlink3.com' );
+    ->addBacklink( 'http://www.backlink2.com' )
+    ->addBacklink( 'http://www.backlink3.com' );
 ```
 
-#### Multiple Media
+#### A Note on Multiple Media
 
 You can attach multiple media. If you don't specify which one is the default then it's assumed that it's the first one to appear in the feed. Alternatively, you can all `isDefault()` on an item.
 
@@ -1511,5 +1556,3 @@ Hopefully that's enough for you to get started, should you need to extend it.
 - [Podcast RSS iTunes](https://github.com/simplepie/simplepie-ng/wiki/Spec:-iTunes-Podcast-RSS) specification
 - The [GeoRSS Simple](http://www.georss.org/simple.html) specification
 - Information about the [Dublin Core](https://feedforall.com/macdocs/html/RSSReferenceDC.html) extension to RSS
-
-> End of documentation for now; it's a work-in-progress.
