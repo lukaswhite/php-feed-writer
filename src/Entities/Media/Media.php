@@ -710,7 +710,7 @@ class Media extends Entity
      * @param string ...$comments
      * @return Media
      */
-    public function comments( ...$comments ) : self
+    public function comments( string ...$comments ) : self
     {
         foreach( $comments as $comment ) {
             $this->comments[ ] = $comment;
@@ -874,10 +874,10 @@ class Media extends Entity
     /**
      * Set multiple responses at a time
      *
-     * @param ...string $responses
+     * @param string ...$responses
      * @return self
      */
-    public function responses( ...$responses ) : self
+    public function responses( string ...$responses ) : self
     {
         $this->responses = $responses;
         return $this;
