@@ -243,7 +243,7 @@ class Rss2Test extends TestCase
     {
         $feed = new RSS2( );
         $feed->registerDublinCoreNamespace( );
-        $this->assertTrue( strpos( $feed->toString( ), 'xmlns:media="http://purl.org/dc/elements/1.1' ) > -1 );
+        $this->assertTrue( strpos( $feed->toString( ), 'xmlns:dc="http://purl.org/dc/elements/1.1' ) > -1 );
         $feed->registerGeoRSSNamespace( );
         $this->assertTrue( strpos( $feed->toString( ), 'xmlns:georss="http://www.georss.org/georss' ) > -1 );
 

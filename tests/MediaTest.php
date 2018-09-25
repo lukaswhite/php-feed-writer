@@ -5,6 +5,7 @@ namespace Lukaswhite\FeedWriter\Tests;
 use Lukaswhite\FeedWriter\Entities\Media\Credit;
 use Lukaswhite\FeedWriter\Entities\Media\Media;
 use Lukaswhite\FeedWriter\Entities\Media\Price;
+use Lukaswhite\FeedWriter\Entities\Media\Status;
 use Lukaswhite\FeedWriter\RSS2;
 use Lukaswhite\RSSWriter\Feed;
 
@@ -114,9 +115,18 @@ class MediaTest extends TestCase
             ->addBacklink( 'http://www.backlink2.com' )
             ->addBacklink( 'http://www.backlink3.com' );
 
+        $media->peerLink( 'http://www.example.org/sampleFile.torrent', 'application/x-bittorrent' );
+
         $media->addRating( 'adult', 'urn:simple' )
             ->addRating( 'r (cz 1 lz 1 nz 1 oz 1 vz 1)','urn:icra' )
-            ->addRating( 'a-rating' );
+            ->addRating( 'nonadult' );
+
+        $media->status( Status::BLOCKED, 'http://www.reasonforblocking.com' );
+
+        $media->license(
+            'Creative Commons Attribution 3.0 United States License',
+            'http://creativecommons.org/licenses/by/3.0/us/'
+        );
 
         $community = $media->addCommunity( );
 
@@ -134,6 +144,13 @@ class MediaTest extends TestCase
             ->addTag( 'abc', 3 )
             ->addTag( 'news', 5 )
             ->addTag( 'opinions', 1 );
+
+        $media->addLocation( )
+            ->description( 'London, UK' )
+            ->startTime( '03:00' )
+            ->endTime( '08:00' )
+            ->lat( 51.5074 )
+            ->lng( 0.1278 );
 
 
         $rendered = $feed->build( )->saveXml( );
@@ -366,6 +383,50 @@ class MediaTest extends TestCase
         );
 
         $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:peerLink' )->length
+        );
+        $this->assertEquals(
+            'http://www.example.org/sampleFile.torrent',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:peerLink' )[ 0 ]->getAttribute( 'href' )
+        );
+        $this->assertEquals(
+            'application/x-bittorrent',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:peerLink' )[ 0 ]->getAttribute( 'type' )
+        );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:status' )->length
+        );
+        $this->assertEquals(
+            'blocked',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:status' )[ 0 ]->getAttribute( 'state' )
+        );
+        $this->assertEquals(
+            'http://www.reasonforblocking.com',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:status' )[ 0 ]->getAttribute( 'reason' )
+        );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:license' )->length
+        );
+        $this->assertEquals(
+            'Creative Commons Attribution 3.0 United States License',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:license' )[ 0 ]->textContent
+        );
+        $this->assertEquals(
+            'http://creativecommons.org/licenses/by/3.0/us/',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:license' )[ 0 ]->getAttribute( 'href' )
+        );
+        $this->assertEquals(
+            'text/html',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:license' )[ 0 ]->getAttribute( 'type' )
+        );
+
+
+        $this->assertEquals(
             3,
             $xpath->query( '/rss/channel/item[1]/media:content/media:rating' )->length
         );
@@ -386,7 +447,7 @@ class MediaTest extends TestCase
             $xpath->query( '/rss/channel/item[1]/media:content/media:rating[2]' )[ 0 ]->getAttribute( 'scheme' )
         );
         $this->assertEquals(
-            'a-rating',
+            'nonadult',
             $xpath->query( '/rss/channel/item[1]/media:content/media:rating[3]' )[ 0 ]->textContent
         );
         $this->assertEquals(
@@ -443,11 +504,46 @@ class MediaTest extends TestCase
                 '/rss/channel/item[1]/media:content/media:community/media:statistics' )[ 0 ]
                 ->getAttribute( 'favorites' )
         );
-        
+
         $this->assertEquals(
             'news:5, abc:3, opinions, reuters',
             $xpath->query( '/rss/channel/item[1]/media:content/media:community/media:tags' )[ 0 ]->textContent
         );
+
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location' )->length
+        );
+        $this->assertEquals(
+            'London, UK',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location' )[ 0 ]->getAttribute( 'description' )
+        );
+        $this->assertEquals(
+            '03:00',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location' )[ 0 ]->getAttribute( 'start' )
+        );
+        $this->assertEquals(
+            '08:00',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location' )[ 0 ]->getAttribute( 'end' )
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location/georss:where' )->length
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location/georss:where/gml:Point' )->length
+        );
+        $this->assertEquals(
+            1,
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location/georss:where/gml:Point/gml:pos' )->length
+        );
+        $this->assertEquals(
+            '51.5074 0.1278',
+            $xpath->query( '/rss/channel/item[1]/media:content/media:location/georss:where/gml:Point/gml:pos' )[ 0 ]->textContent
+        );
+
+
         //print( $feed->build( )->saveXML( ) );
 
     }

@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities\Media;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
+use Lukaswhite\FeedWriter\Entities\General\Link;
 use Lukaswhite\FeedWriter\Entities\Media\Community\Community;
 use Lukaswhite\FeedWriter\Exceptions\InvalidExpressionException;
 use Lukaswhite\FeedWriter\Exceptions\InvalidMediumException;
@@ -120,6 +121,20 @@ class Media extends Entity
     protected $descriptionType;
 
     /**
+     * The status of the media
+     *
+     * @var Status
+     */
+    protected $status;
+
+    /**
+     * The license
+     *
+     * @var License
+     */
+    protected $license;
+
+    /**
      * Keywords that describe this media
      *
      * @var array
@@ -132,6 +147,13 @@ class Media extends Entity
      * @var array
      */
     protected $thumbnails = [ ];
+
+    /**
+     * The locations
+     *
+     * @var array
+     */
+    protected $locations = [ ];
 
     /**
      * The player; e.g. a page that has an embedded video player for this media item
@@ -202,6 +224,13 @@ class Media extends Entity
      * @var array
      */
     protected $backLinks = [ ];
+
+    /**
+     * Optional P2P link
+     *
+     * @var Link
+     */
+    protected $peerLink;
 
     /**
      * The ratings
@@ -288,6 +317,14 @@ class Media extends Entity
             $media->appendChild( $description );
         }
 
+        if ( $this->status ) {
+            $media->appendChild( $this->status->element( ) );
+        }
+
+        if ( $this->license ) {
+            $media->appendChild( $this->license->element( ) );
+        }
+
         if ( count( $this->keywords ) ) {
             $media->appendChild(
                 $this->createElement(
@@ -300,6 +337,12 @@ class Media extends Entity
         if ( count( $this->thumbnails ) ) {
             foreach( $this->thumbnails as $thumbnail ) {
                 $media->appendChild( $thumbnail->element( ) );
+            }
+        }
+
+        if ( count( $this->locations ) ) {
+            foreach( $this->locations as $location ) {
+                $media->appendChild( $location->element( ) );
             }
         }
 
@@ -366,6 +409,10 @@ class Media extends Entity
             foreach( $this->backLinks as $backLink ) {
                 $backLinks->appendChild( $this->createElement( 'media:backLink', $backLink ) );
             }
+        }
+
+        if ( $this->peerLink ) {
+            $media->appendChild( $this->peerLink->element( ) );
         }
 
         if ( count( $this->ratings ) ) {
@@ -532,6 +579,38 @@ class Media extends Entity
     }
 
     /**
+     * Set the status of the media
+     *
+     * @param string $state
+     * @param string $reason
+     * @return self
+     */
+    public function status( string $state, string $reason )
+    {
+        $this->status = ( new Status( $this->feed ) )
+            ->state( $state )
+            ->reason( $reason );
+        return $this;
+    }
+
+    /**
+     * Specify the license
+     *
+     * @param string $name
+     * @param string $url
+     * @param string $type
+     * @return self
+     */
+    public function license( string $name, string $url, string $type = 'text/html' )
+    {
+        $this->license = ( new License( $this->feed ) )
+            ->name( $name )
+            ->type( $type )
+            ->url( $url );
+        return $this;
+    }
+
+    /**
      * Set the keywords
      *
      * @param string ...$keywords
@@ -553,6 +632,20 @@ class Media extends Entity
         $thumbnail = new Thumbnail( $this->feed );
         $this->thumbnails[ ] = $thumbnail;
         return $thumbnail;
+    }
+
+    /**
+     * Add a location
+     *
+     * @return Location
+     */
+    public function addLocation( ) : Location
+    {
+        $location = new Location( $this->feed );
+        $this->locations[ ] = $location;
+        $this->feed->registerGeoRSSNamespace( );
+        $this->feed->registerOpenGISNamespace( );
+        return $location;
     }
 
     /**
@@ -664,6 +757,22 @@ class Media extends Entity
     public function addBacklink( string $link ) : self
     {
         $this->backLinks[ ] = $link;
+        return $this;
+    }
+
+    /**
+     * Set the peer link
+     *
+     * @param string $url
+     * @param string $type
+     * @return self
+     */
+    public function peerLink( string $url, string $type ) : self
+    {
+        $this->peerLink = ( new Link( $this->feed ) )
+            ->tagName( 'media:peerLink' )
+            ->url( $url )
+            ->type( $type );
         return $this;
     }
 

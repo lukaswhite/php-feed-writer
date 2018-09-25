@@ -4,6 +4,7 @@ namespace Lukaswhite\FeedWriter\Entities\Rss;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\General\Enclosure;
+use Lukaswhite\FeedWriter\Traits\DublinCore\SupportsDublinCore;
 use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
 use Lukaswhite\FeedWriter\Traits\HasCategories;
 use Lukaswhite\FeedWriter\Traits\HasLink;
@@ -27,7 +28,8 @@ class Item extends Entity
         HasCategories,
         HasMedia,
         HasMediaGroups,
-        HasGeoRSS;
+        HasGeoRSS,
+        SupportsDublinCore;
 
     /**
      * The GUID (globally unique identifier)
@@ -162,6 +164,8 @@ class Item extends Entity
                 $item->appendChild( $enclosure->element( $this->feed->getDocument( ) ) );
             }
         }
+
+        $this->addDublinCoreTags( $item );
 
         $this->addMediaElements( $item );
         $this->addMediaGroupElements( $item );

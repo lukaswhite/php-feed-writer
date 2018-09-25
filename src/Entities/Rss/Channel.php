@@ -5,6 +5,7 @@ namespace Lukaswhite\FeedWriter\Entities\Rss;
 use Lukaswhite\FeedWriter\Entities\Entity;
 use Lukaswhite\FeedWriter\Entities\General\Link;
 use Lukaswhite\FeedWriter\Entities\General\Image;
+use Lukaswhite\FeedWriter\Traits\DublinCore\SupportsDublinCore;
 use Lukaswhite\FeedWriter\Traits\GeoRSS\HasGeoRSS;
 use Lukaswhite\FeedWriter\Traits\HasCategories;
 use Lukaswhite\FeedWriter\Traits\HasLink;
@@ -26,7 +27,8 @@ class Channel extends Entity
         HasPublishedDate,
         HasCategories,
         HasTextInput,
-        HasGeoRSS;
+        HasGeoRSS,
+        SupportsDublinCore;
 
     /**
      * The date and time that the feed was last built
@@ -454,6 +456,9 @@ class Channel extends Entity
         if ( $this->cloud ) {
             $channel->appendChild( $this->cloud->element( ) );
         }
+
+        // Optionally add any Dublin Core tags
+        $this->addDublinCoreTags( $channel );
 
         // Optionally add the GeoRSS tags
         if ( $this->geoRSS ) {

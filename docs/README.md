@@ -909,6 +909,31 @@ return response( )->make(
 );
 ```
 
+## Dublin Core
+
+[Dublin Core](https://feedforall.com/macdocs/html/RSSReferenceDC.html) is also supported. Here's an example:
+
+```php
+$channel
+    ->dcTitle( 'Example feed' )
+    ->dcCreator( 'creator@example.com' )
+    ->dcContributor( 'contributor@example.com' )
+    ->dcCoverage( 'United Kingdom' )
+    ->dcDate( $date )
+    ->dcDescription( 'An example feed' )
+    ->dcFormat( 'text/html' )
+    ->dcIdentifier ('http://example.com/feed.rss' )
+    ->dcLanguage( 'en' )
+    ->dcPublisher( 'Example Co' )
+    ->dcRelation( 'http://example2.com' )
+    ->dcRights( 'Copyright Example' )
+    ->dcSource( 'http://example.com' )
+    ->dcSubject( 'It is an example' )
+    ->dcType( 'Text' );
+```
+
+> As soon as you add a Dublin Core tag, the namespace automatically gets registered for you.
+
 ## MediaRSS
 
 [MediaRSS](http://www.rssboard.org/media-rss) is an extension of the RSS specification which allows you to incoporate media &mdash; such as images, videos and audio &mdash; in your RSS feeds. It's much more comprehensive than the image and enclosures provided by RSS.
@@ -968,6 +993,305 @@ $media = $item->addMedia( )
 		'This is great',
 		'I like this'
 );
+```
+
+### MediaRSS Support in Detail
+
+After those examples, it's time to dive deeper. There's a lot you can do with MediaRSS so let's start with the basics, then the rest is for reference.
+
+#### Basic Information
+
+To add media to a channel / feed / item / entry, call `addMedia()`. That returns a `Media` instance that you can begin to manipulate.
+
+The first thing you'll need to do is set the Url of the actual media:
+
+```php
+$media->url( 'http://www.webmonkey.com/monkeyrock.mpg' );
+```
+
+Let's also set the MIME type and file size;
+
+```php
+$media->type( 'video/mpeg' )
+	->filesize( 2471632 );
+```
+
+We should also set the medium; that just specifies whether it's a video, image, audio, a document or an executable.
+
+> You would expect that the media could be inferred from the MIME type, but [the specification](http://www.rssboard.org/media-rss) isn't clear on whether that's likely to be the case; so it's probably best to set it to make sure.
+
+```php
+$media->medium( Media::VIDEO );
+```
+
+#### Text-based Metadata
+
+Media may also have a title, description and keywords:
+
+```php
+$media
+	->title( 'The Webmonkey Band "Monkey Rock"' )
+	->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the Fillmore Auditorium.' )
+	->keywords( 'monkeys', 'music', 'rock' );
+```
+
+Note that the description also supports HTML, provided you pass `html` as the optional second argument:
+
+```php
+$media
+	->title( 'The Webmonkey Band "Monkey Rock"' )
+	->description( 'See Rocking Webmonkey Garage Band playing our classic song "Monkey Rock" to a sold-out audience at the <a href="http://www.fillmoreauditorium.org/">Fillmore Auditorium</a>.', 'html' )
+	->keywords( 'monkeys', 'music', 'rock' );
+```
+
+#### The Hash
+
+You may provide a hash for the binary media file. By default it's assumed that it's an `md5` hash, but `sha-1` is also supported; simply pass that as the second argument.
+
+```php
+$media->hash( 'dfdec888b72151965a34b4b59031290a' )
+// is equivalent to
+$media->hash( 'dfdec888b72151965a34b4b59031290a', 'md5' )
+```
+
+#### Categories
+
+Media objects may have one or more categories. Categories may have an optional scheme.
+
+_todo_
+
+#### Status
+
+The status of a media item can be one of `active`, `blocked` or `deleted`. When you define the status, you're also expected to provide a reason. The reason can be in the form of a short piece of text, or a URL to a page that describes the reason.
+
+For example, to indicate that the media item is blocked:
+
+```php
+$media->status( Status::BLOCKED, 'http://www.reasonforblocking.com' );
+```
+
+#### Copyright Information
+
+_todo_
+
+#### Dimensions
+
+It's a good idea to supply dimensions, assuming it's a video or audio.
+
+```php
+$media->width( 320 )
+	->height( 240 );
+```
+
+#### Duration, Bit-rate and Frame rate	
+Obviously these may not be relevant, depending the the type of media.
+
+```php
+$media
+	->duration( 147 )
+	->bitrate( 128 )
+	->framerate( 24 );
+```	
+
+#### The Expression
+
+It's probably not immediately obvious, but the expression states whether a video or audio is:
+
+* The whole thing; e.g. a whole movie or song
+* A sample; for example a movie trailer or song excerpt
+* Non-stop; e.g. a live stream
+
+To set that:
+
+```php
+$media->expression( Media::FULL );
+// or
+$media->expression( Media::SAMPLE );
+// or 
+$media->expression( Media::NONSTOP );
+```
+
+#### Credits
+
+You can add credits to a media item with `addCredit()`. This returns an instance of `Credit` onto which you can attach the entity being credited (e.g. a person or company), the role that entity played and an optional scheme. 
+
+The default scheme is `urn:ebu`, which refers to the European Broadcasting Union Role Codes; for example `actor`, `composer`, `choreographer`, `graphic designer` etc.
+
+Here's an example:
+
+```php
+$media->addCredit( )
+	->name( 'John Doe')
+	->role( 'composer' )
+	->scheme( 'urn:ebu' );
+```
+
+#### Thumbnails
+
+You can attach thumbnails to a video. You can have multiple thumbnails, these can be associated with particular points in the video.
+
+> If time coding is not in play, it's assumed that the thumbnails are in order of importance.
+
+Here's an example:
+
+```php
+$media->addThumbnail( )
+	->url( 'http://www.webmonkey.com/images/monkeyrock-thumb.jpg' )
+	->width( 145 )
+	->height( 98 )
+	->time( '12:34' );
+```
+
+#### Locations
+
+You can associate one or more geographical locations with a media item. Locations are tied to periods within the media.
+
+For example, suppose you have a movie, and after the opening credits there's a five-minute scene that takes place in London. Here's how you'd model that:
+
+```php
+$media->addLocation( )
+	->description( 'London, UK' )
+	->startTime( '03:00' )
+	->endTime( '08:00' )
+	->lat( 51.5074 )
+	->lng( 0.1278 );
+```	
+
+#### Community-related Content
+
+You can attach three types of community-related content:
+
+1. Star ratings
+2. Statistics; i.e. the number of views and/or "favorites"
+3. User-provided tags
+
+Here's an example:
+
+```php
+$community = $media->addCommunity( );
+
+$community->addStarRating( )
+	->average( 3.5 )
+	->count( 20 )
+	->min( 1 )
+	->max( 10 );
+
+$community->addStatistics( )
+	->views( 5 )
+	->favorites( 3 );
+
+$community->addTag( 'reuters' )
+	->addTag( 'abc', 3 )
+	->addTag( 'news', 5 )
+	->addTag( 'opinions', 1 );
+```
+
+The second argument to `addTag()` is the weight. This might be, for example, the number of users who have assigned that particular tag; the default being 1. 
+
+> The tags must be output in descending order of weight; however this is done automatically, so as you can see from the example, you can add them in any order.
+
+#### Restrictions
+
+You can attach restrictions onto media.
+
+> This element is purely informational and no obligation can be assumed or implied
+
+There are three types of restriction:
+
+1. Whether the media may be shared
+2. On a per-country basis
+3. By distributor (i.e. a URI)
+
+Restrictions can be `deny` or `allow`; the default is `deny`.
+
+Here are some examples:
+
+```php
+$media->addRestriction( )->onSharing( )->deny( );
+// is the equivalent of
+$media->addRestriction( )->onSharing( );
+        
+$media->addRestriction( )->allow( )->byCountry( 'au' );
+
+$media->addRestriction( )->byUri( 'http://example.com' );
+```
+
+#### Ratings
+
+Not to be confused with star ratings, which come under community content, ratings are used to specify the permissable audience. Think `R` vs `PG-13` in the context of movies.
+
+Ratings may have an optional scheme.
+
+Some examples:
+
+```php
+$media->addRating( 'nonadult' ); 
+
+$media->addRating( 'adult', 'urn:simple' );
+
+$media->addRating( 'r (cz 1 lz 1 nz 1 oz 1 vz 1)','urn:icra' );
+```
+            
+#### Text
+
+You may attach text to a media item. These can also be associated with periods in the media. For example a transcript, closed captions or the lyrics of a song.
+
+> For transcripts it is encouraged, but not required, that the elements be grouped by language and appear in time sequence order based on the start time.
+
+Here are a couple of examples:
+
+```php
+$media->addText( )
+	->content( 'Oh, say, can you see' )
+	->language( 'en' )
+	->start( '00:00:03.000' )
+	->end( '00:00:10.000' );
+
+$media->addText( )
+	->content( 'By the dawn\'s early <strong>light</strong>', 'html' )
+	->language( 'en' )
+	->start( '00:00:10.000' )
+	->end( '00:00:17.000' );
+```	
+
+#### Scenes
+
+You may also define scenes within a media item. These have four optional properties; the title, description, and start and end times.
+
+For example:
+
+```php
+$media->addScene( )
+	->title( 'sceneTitle1' )
+	->description( 'sceneDesc1' )
+	->startTime( '00:15' )
+	->endTime( '00:45' );
+```
+
+#### Peer Link
+
+To add a [peer (P2P) link](http://www.rssboard.org/media-rss#media-peerlink):
+
+```php
+$media->peerLink( 'http://www.example.org/sampleFile.torrent', 'application/x-bittorrent' );
+```
+
+#### Back Links
+
+To add [back links](http://www.rssboard.org/media-rss#media-backlinks); that's to say, all URLs that point to a media object:
+
+```php
+$media->addBacklink( 'http://www.backlink1.com' )
+	->addBacklink( 'http://www.backlink2.com' )
+	->addBacklink( 'http://www.backlink3.com' );
+```
+
+#### Multiple Media
+
+You can attach multiple media. If you don't specify which one is the default then it's assumed that it's the first one to appear in the feed. Alternatively, you can all `isDefault()` on an item.
+
+```php
+$item->addMedia( )->isDefault( );
 ```
 
 ## GeoRSS

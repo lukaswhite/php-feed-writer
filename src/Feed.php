@@ -136,7 +136,7 @@ abstract class Feed
     public function registerDublinCoreNamespace( ) : self
     {
         return $this->registerNamespace(
-            'media',
+            'dc',
             'http://purl.org/dc/elements/1.1/'
         );
     }
@@ -151,6 +151,19 @@ abstract class Feed
         return $this->registerNamespace(
             'georss',
             'http://www.georss.org/georss'
+        );
+    }
+
+    /**
+     * Register the OpenGIS namespace
+     *
+     * @return $this
+     */
+    public function registerOpenGISNamespace( ) : self
+    {
+        return $this->registerNamespace(
+            'gml',
+            'http://www.opengis.net/gml'
         );
     }
 
