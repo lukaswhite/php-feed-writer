@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities\Rss;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
+use Lukaswhite\FeedWriter\Traits\DublinCore\SupportsDublinCore;
 use Lukaswhite\FeedWriter\Traits\HasLink;
 use Lukaswhite\FeedWriter\Traits\HasTitle;
 use Lukaswhite\FeedWriter\Traits\HasDescription;
@@ -16,7 +17,8 @@ class TextInput extends Entity
 {
     use HasTitle,
         HasDescription,
-        HasLink;
+        HasLink,
+        SupportsDublinCore;
 
     /**
      * The name of the text object in the text input area.
@@ -55,6 +57,8 @@ class TextInput extends Entity
         if ( $this->name ) {
             $item->appendChild( $this->createElement( 'name', $this->name ) );
         }
+
+        $this->addDublinCoreTags( $item );
 
         return $item;
     }

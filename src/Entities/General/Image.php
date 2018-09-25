@@ -3,6 +3,7 @@
 namespace Lukaswhite\FeedWriter\Entities\General;
 
 use Lukaswhite\FeedWriter\Entities\Entity;
+use Lukaswhite\FeedWriter\Traits\DublinCore\SupportsDublinCore;
 use Lukaswhite\FeedWriter\Traits\HasDimensions;
 use Lukaswhite\FeedWriter\Traits\HasLink;
 use Lukaswhite\FeedWriter\Traits\HasTitle;
@@ -22,7 +23,8 @@ class Image extends Entity
         HasLink,
         HasTitle,
         HasDescription,
-        HasDimensions;
+        HasDimensions,
+        SupportsDublinCore;
 
     /**
      * Create the DOM element that represents this entity.
@@ -43,6 +45,8 @@ class Image extends Entity
         $this->addLinkElement( $image );
 
         $this->addDimensionsElements( $image );
+
+        $this->addDublinCoreTags( $image );
 
         return $image;
     }

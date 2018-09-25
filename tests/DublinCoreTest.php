@@ -168,4 +168,58 @@ class DublinCoreTest extends TestCase
         );
     }
 
+    public function testAddingDublinCoreToRSSImage( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\RSS2();
+        $feed->prettyPrint();
+
+        $channel = $feed->addChannel();
+
+        $channel->title('Channel title')
+            ->description('A description of the channel')
+            ->link('http://example.com');
+
+        $channel
+            ->addImage( )
+            ->dcTitle( 'Image title' );
+
+        $doc = new \DOMDocument();
+
+        $doc->loadXML($feed->toString());
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertEquals(1, $xpath->query('/rss/channel/image/dc:title')->length);
+        $this->assertEquals(
+            'Image title',
+            $xpath->query('/rss/channel/image/dc:title')[0]->textContent
+        );
+    }
+
+    public function testAddingDublinCoreToRSSTextInput( )
+    {
+        $feed = new \Lukaswhite\FeedWriter\RSS2();
+        $feed->prettyPrint();
+
+        $channel = $feed->addChannel();
+
+        $channel->title('Channel title')
+            ->description('A description of the channel')
+            ->link('http://example.com');
+
+        $channel
+            ->addTextInput( )
+            ->dcTitle( 'Text input title' );
+
+        $doc = new \DOMDocument();
+
+        $doc->loadXML($feed->toString());
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertEquals(1, $xpath->query('/rss/channel/textInput/dc:title')->length);
+        $this->assertEquals(
+            'Text input title',
+            $xpath->query('/rss/channel/textInput/dc:title')[0]->textContent
+        );
+    }
+
 }
