@@ -85,7 +85,9 @@ class ItunesTest extends TestCase
 
         $images = $xpath->query( '/rss/channel/itunes:image' );
         $this->assertEquals( 1, $images->length );
-        $this->assertEquals( 'http://example.com/podcasts/everything/AllAboutEverything.jpg', $images[ 0 ]->textContent );
+        $imageAttributes = $this->getAttributesOfElementNamed( 'itunes:image', $feed->toString( ) );
+        $this->assertArrayHasKey( 'href', $imageAttributes );
+        $this->assertEquals( 'http://example.com/podcasts/everything/AllAboutEverything.jpg', $imageAttributes[ 'href' ] );
 
         $explicits = $xpath->query( '/rss/channel/itunes:explicit' );
         $this->assertEquals( 1, $explicits->length );

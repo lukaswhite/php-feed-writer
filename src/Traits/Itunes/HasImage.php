@@ -37,7 +37,13 @@ trait HasImage
     protected function addImageElement( \DOMElement $el ) : void
     {
         if ( $this->image ) {
-            $el->appendChild( $this->createElement( 'itunes:image', $this->image ) );
+            $el->appendChild( $this->createElement(
+                'itunes:image',
+                '',
+                [
+                    'href'  =>  $this->image
+                ] )
+            );
         }
     }
 }
