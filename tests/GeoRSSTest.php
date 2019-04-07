@@ -30,6 +30,13 @@ class GeoRSSTest extends TestCase
 
         $this->assertTrue( strpos( $feed->toString( ), 'xmlns:georss="http://www.georss.org/georss' ) > -1 );
 
+        $sxe = new \SimpleXMLElement( $feed->toString( ) );
+
+        $namespaces = $sxe->getNamespaces(true);
+
+        $this->assertArrayHasKey( 'georss', $namespaces );
+        $this->assertEquals( 'http://www.georss.org/georss', $namespaces[ 'georss' ] );
+
     }
 
     public function testAddingLine( )

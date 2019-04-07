@@ -124,7 +124,7 @@ class Chapter extends Entity
 
     /**
      * Set the (optional) image
-     * 
+     *
      * @param string $image
      * @return Chapter
      */

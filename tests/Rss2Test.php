@@ -34,9 +34,14 @@ class Rss2Test extends TestCase
             ->skipHours( 0, 1, 2, 3, 4 )
             ->webmaster( 'webmaster@example.com' )
             ->managingEditor( 'editor@example.com (the editor)' )
-            ->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' )
-            ->categories( 'one', 'two', 'three' )
-            ->addCategory( 'four' )
+            ->rating( '(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l by "webmaster@example.com" on "2007.01.29T10:09-0800" r (n 0 s 0 v 0 l 0))' );
+
+        $channel->addCategory( )->name( 'one' );
+        $channel->addCategory( )->name( 'two' );
+        $channel->addCategory( )->name( 'three' );
+        $channel->addCategory( )->name( 'four' );
+
+        $channel
             ->addImage( )
                 ->url( 'http://example.com/image.jpeg' )
                 ->link( 'http://example.com' )
@@ -52,9 +57,15 @@ class Rss2Test extends TestCase
             ->pubDate( new \DateTime( '2018-09-07 09:30' ) )
             ->guid( 'http://example.com/blog/post-1.html', true )
             ->encodedContent( '<p>The content of the item</p>' )
-            ->author( 'jbb@dallas.example.com (Joe Bob Briggs)' )
-            ->addCategory( 'one' )
-            ->addCategory( 'two', 'http://example.com/categories' );
+            ->author( 'jbb@dallas.example.com (Joe Bob Briggs)' );
+
+        $item1
+            ->addCategory( )->name( 'one' );
+
+        $item1
+            ->addCategory( )
+                ->name( 'two' )
+                ->domain( 'http://example.com/categories' );
 
         $enclosure = $item1->addEnclosure( );
         $enclosure->url( 'http://example.com/audio.mp3' )

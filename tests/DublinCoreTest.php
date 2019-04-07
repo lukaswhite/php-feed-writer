@@ -135,6 +135,12 @@ class DublinCoreTest extends TestCase
         );
 
 
+        $sxe = new \SimpleXMLElement( $feed->toString( ) );
+
+        $namespaces = $sxe->getNamespaces(true);
+
+        $this->assertArrayHasKey( 'dc', $namespaces );
+        $this->assertEquals( 'http://purl.org/dc/elements/1.1/', $namespaces[ 'dc' ] );
 
     }
 

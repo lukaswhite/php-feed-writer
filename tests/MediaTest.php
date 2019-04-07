@@ -31,9 +31,7 @@ class MediaTest extends TestCase
             ->lastBuildDate( $channelLastBuildDate )
             ->language( 'en-US' )
             ->copyright( 'Copyright Example Org' )
-            ->addLink( 'atom:link', 'http://example.com', 'self', 'application/atom+xml' )
-            ->categories( 'one', 'two', 'three' )
-            ->addCategory( 'four' );
+            ->addLink( 'atom:link', 'http://example.com', 'self', 'application/atom+xml' );
 
 
         $item = $channel->addItem( );

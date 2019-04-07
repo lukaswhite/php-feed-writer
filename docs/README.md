@@ -2,7 +2,16 @@
 
 <img src="https://lukaswhite.github.io/php-feed-writer/assets/php-feed-writer.svg" width="120px" alt="PHP Feed Writer">
 
-A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes, along with support for MediaRSS, Dublin Core and GeoRSS.
+A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes, along with support for MediaRSS, Dublin Core, GeoRSS and WordPress eXtended RSS (WXR).
+
+In other words, you could use it for:
+
+* Creating RSS and Atom feeds
+* Creating podcasts
+* Publishing videos
+* Creating audio feeds
+* Creating lists of geographical places
+* ...and more
 
 [![Build Status](https://travis-ci.org/lukaswhite/php-feed-writer.svg?branch=master)](https://travis-ci.org/lukaswhite/php-feed-writer)
 
@@ -265,26 +274,14 @@ $channel->pubDate( new \DateTime( ) );
 
 #### Setting a Channel's Categories
 
-There are two ways to set a channel's categories. You can set multiple categories like this:
+Call `addCategory()` on the channel object to add a category. This returns an instance of `Category` which includes methods to set the name and, optionally, the domain. For example:
 
 ```php
-$channel->categories( 'PHP', 'development', 'programming' );
+$channel->addCategory( )
+	->name( 'PHP' )
+	->domain( 'the domain' );
 ```
 
-The limitation of that, though, is that you cannot set the domain attribute; if you need to do that then simply use the `addCategory` method and pass the domain as the second argument:
-
-```php
-$channel->addCategory( 'PHP', 'the domain' );
-```
-
-The second argument is optional, so the previous example can be re-written as follows:
-
-```php
-$channel
-    ->addCategory( 'PHP' )
-    ->addCategory( 'development' )
-    ->addCategory( 'programming' );
-```
 
 #### Adding Links
 
@@ -1384,9 +1381,25 @@ You can attach multiple media. If you don't specify which one is the default the
 $item->addMedia( )->isDefault( );
 ```
 
+## WordPress eXtended RSS (WXR)
+
+The library also implements the WordPress eXtended RSS extension, which is used primarily for importing and exporting Wordpress blogs.
+
+You may wonder why you would ever export using the Wordpress format from anything other than Wordpress.
+
+One reason is that the extension provides support for comments; something the basic RSS specification does not.
+
+Moreover, the WordPress eXtended RSS format is used by [Disqus](https://help.disqus.com/developer/custom-xml-import-format) for importing comments from an existing blog. Using this library, therefore, allows you to export all of the comments from your blog implementation into Disqus.
+
+It supports categorization; although these terms and/or tags would generally be lifted from a Wordpress blog, you might find them useful for your  own data export/import needs.
+
+It also provides additional authorship information. Whereas an author in the RSS core spec is typically identified by a string, the WXR extension allows you to provide an ID, login, first & last and/or display name in addition to their e-mail address.
+
 ## GeoRSS
 
 The library also supports [GeoRSS Simple](http://www.georss.org/simple.html), which is an extension of RSS &mdash; and, despite what the name suggests &mdash; Atom. It allows you to associate geographical locations with an RSS channel or item, or an Atom feed or entry.
+
+It could be useful if, for example, you write a travel blog and want to be able to identify the place an item is about, in the feed, in a way which might be useful for filtering or mapping.
 
 To use it, call `geoRSS()` on the channel / item / feed / entry, then call a method on the instance of the class it returns. That's probably better explained with an example:
 
@@ -1446,7 +1459,7 @@ $entry->geoRSS( )->elevation( 313 );
 $entry->geoRSS( )->floor( 2 );
 ```
 
-Whenever you call any of these methods, the GeoRSS namespace is automatically added for you.
+> Whenever you call any of these methods, the GeoRSS namespace is automatically added for you.
 
 ## Extending the Library
 
@@ -1512,7 +1525,7 @@ trait HasTitle
 
 If you have a look at the `Item` class, for example, you'll see that it utilizes this trait.
 
-Here's an abbreviated version of the `Item` class' `element()` method:
+Here's an abbreviated version of the `Item` class' `element()` method; note how the `element()` method uses the `addTitleElement()` method:
 
 ```php
 <?php

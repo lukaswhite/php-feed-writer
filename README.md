@@ -2,7 +2,7 @@
 
 <img src="https://lukaswhite.github.io/php-feed-writer/assets/php-feed-writer.svg" width="120px" alt="PHP Feed Writer">
 
-A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes, along with support for MediaRSS, Dublin Core and GeoRSS.
+A PHP library for writing feeds. Currently supports RSS 2.0, Atom and iTunes, along with support for MediaRSS, Dublin Core, GeoRSS and WordPress eXtended RSS (WXR).
 
 [![Build Status](https://travis-ci.org/lukaswhite/php-feed-writer.svg?branch=master)](https://travis-ci.org/lukaswhite/php-feed-writer)
 

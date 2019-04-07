@@ -1,13 +1,13 @@
 <?php
 
-namespace Lukaswhite\FeedWriter\Traits;
+namespace Lukaswhite\FeedWriter\Traits\Wxr;
 
-use Lukaswhite\FeedWriter\Entities\Rss\Category;
+use Lukaswhite\FeedWriter\Entities\Wxr\Category;
 
 /**
  * Trait HasCategories
  * 
- * @package Lukaswhite\FeedWriter\Traits
+ * @package Lukaswhite\FeedWriter\Traits\Wxr
  */
 trait HasCategories
 {

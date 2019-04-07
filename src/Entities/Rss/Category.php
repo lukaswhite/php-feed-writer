@@ -33,6 +33,16 @@ class Category extends \Lukaswhite\FeedWriter\Entities\General\Category
     }
 
     /**
+     * @param string $name
+     * @return Category
+     */
+    public function name( $name ) : self
+    {
+        $this->term = $name;
+        return $this;
+    }
+
+    /**
      * @param string $domain
      * @return Category
      */
