@@ -2,6 +2,7 @@
 
 namespace Lukaswhite\FeedWriter\Entities\Itunes;
 
+
 /**
  * Class Channel
  *
@@ -20,5 +21,17 @@ class Channel extends AbstractChannel
         /** @var Item $item */
         $this->items[ ] = $item;
         return $item;
+    }
+
+    /**
+     * Add an item
+     *
+     * @return Item
+     */
+    public function addCategory( ) : Category
+    {
+        $category = new Category( $this->feed );
+        $this->categories[ ] = $category;
+        return $category;
     }
 }
