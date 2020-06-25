@@ -2,6 +2,7 @@
 
 namespace Lukaswhite\FeedWriter\Entities\Itunes;
 
+use Lukaswhite\FeedWriter\Traits\Itunes\HasCategories;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasAuthor;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasBlock;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasExplicit;
@@ -19,6 +20,7 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
     use HasSubtitle,
         HasSummary,
         HasAuthor,
+        HasCategories,
         HasImage,
         HasExplicit,
         HasBlock;
