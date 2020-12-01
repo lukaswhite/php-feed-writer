@@ -376,9 +376,6 @@ Can you see this?')
          * </item>**/
 
 
-        print $feed
-            ->toString();
-
         $doc = new \DOMDocument();
         $doc->loadXML($feed->toString());
         $xpath = new \DOMXPath($doc);
@@ -1006,7 +1003,7 @@ Can you see this?')
             ->parent( $rockNRoll );
 
         $xml = $feed->build();
-        print $feed->toString();
+
         $doc = new \DOMDocument();
         $doc->loadXML($feed->toString());
         $xpath = new \DOMXPath($doc);

@@ -28,6 +28,13 @@ class ItunesTest extends TestCase
             ->ttl( 60 )
             ->lastBuildDate( new \DateTime( '2016-03-10 02:00' ) );
 
+        $channel->addCategory()
+            ->term('Technology');
+
+        $channel->addCategory()
+            ->term('Sports')
+            ->children('Football', 'Soccer');
+
         $channel->addItem( )
             ->title( 'Shake Shake Shake Your Spices' )
             ->author( 'John Doe' )
@@ -66,6 +73,7 @@ class ItunesTest extends TestCase
         $this->assertEquals( 2, count( $channel->getItems( ) ) );
 
         $xml = $feed->build( );
+
         $this->assertEquals( 'rss', $xml->documentElement->tagName );
 
         $doc = new \DOMDocument( );
@@ -111,6 +119,9 @@ class ItunesTest extends TestCase
         $ownerEmails = $xpath->query( '/rss/channel/itunes:owner/itunes:email' );
         $this->assertEquals( 1, $ownerEmails->length );
         $this->assertEquals( 'john.doe@example.com', $ownerEmails[ 0 ]->textContent );
+
+        $categories = $xpath->query( '/rss/channel/itunes:category' );
+        $this->assertEquals( 2, $categories->length );
 
         $this->assertTrue( strpos( $feed->toString( ), 'xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd' ) > -1 );
 
