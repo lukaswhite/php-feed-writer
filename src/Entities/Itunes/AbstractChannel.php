@@ -4,6 +4,8 @@ namespace Lukaswhite\FeedWriter\Entities\Itunes;
 
 use Lukaswhite\FeedWriter\Traits\Itunes\HasAuthor;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasBlock;
+use Lukaswhite\FeedWriter\Traits\Itunes\HasCategories;
+use Lukaswhite\FeedWriter\Traits\Itunes\HasEpisodeType;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasExplicit;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasImage;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasSubtitle;
@@ -21,7 +23,12 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
         HasAuthor,
         HasImage,
         HasExplicit,
-        HasBlock;
+        HasBlock,
+        HasCategories,
+        HasEpisodeType;
+
+    const EPISODIC  =   'episodic';
+    const SERIAL    =   'serial';
 
     /**
      * The owner's name
@@ -59,6 +66,11 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
     protected $categories = [ ];
 
     /**
+     * @var string
+     */
+    protected $type;
+
+    /**
      * Set the owner
      *
      * @param string $name
@@ -94,6 +106,32 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
     {
         $this->newFeedUrl = $url;
         return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function type(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function episodic(): self
+    {
+        return $this->type(self::EPISODIC);
+    }
+
+    /**
+     * @return $this
+     */
+    public function serial(): self
+    {
+        return $this->type(self::SERIAL);
     }
 
     /**
@@ -145,6 +183,10 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
 
         $this->addBlockElement( $channel );
 
+        if ( $this->type ) {
+            $channel->appendChild( $this->createElement( 'itunes:type', $this->type ) );
+        }
+
         if ( $this->isComplete ) {
             $channel->appendChild( $this->createElement( 'itunes:complete', 'Yes' ) );
         }
@@ -152,6 +194,8 @@ abstract class AbstractChannel extends \Lukaswhite\FeedWriter\Entities\Rss\Chann
         if ( $this->newFeedUrl ) {
             $channel->appendChild( $this->createElement( 'itunes:new-feed-url', $this->newFeedUrl ) );
         }
+
+        $this->addEpisodeTypeElement( $channel );
 
         if ( $this->generator ) {
             $channel->appendChild( $this->createElement( 'generator', $this->generator ) );

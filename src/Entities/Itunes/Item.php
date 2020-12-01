@@ -4,6 +4,7 @@ namespace Lukaswhite\FeedWriter\Entities\Itunes;
 
 use Lukaswhite\FeedWriter\Traits\Itunes\HasAuthor;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasBlock;
+use Lukaswhite\FeedWriter\Traits\Itunes\HasEpisodeType;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasExplicit;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasImage;
 use Lukaswhite\FeedWriter\Traits\Itunes\HasSubtitle;
@@ -21,7 +22,8 @@ class Item extends \Lukaswhite\FeedWriter\Entities\Rss\Item
         HasAuthor,
         HasImage,
         HasExplicit,
-        HasBlock;
+        HasBlock,
+        HasEpisodeType;
 
     /**
      * The duration of the item. Note that this is stored as an integer; i.e. the number of seconds,
@@ -44,6 +46,20 @@ class Item extends \Lukaswhite\FeedWriter\Entities\Rss\Item
      * @var int
      */
     protected $order;
+
+    /**
+     * The episode number
+     *
+     * @var int
+     */
+    protected $episode;
+
+    /**
+     * The season
+     *
+     * @var int
+     */
+    protected $season;
 
     /**
      * Set the duration
@@ -82,6 +98,30 @@ class Item extends \Lukaswhite\FeedWriter\Entities\Rss\Item
     public function order( int $order )
     {
         $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * Specify the episode number
+     *
+     * @param int $episode
+     * @return $this
+     */
+    public function episode( int $episode )
+    {
+        $this->episode = $episode;
+        return $this;
+    }
+
+    /**
+     * Specify the season
+     *
+     * @param int $season
+     * @return $this
+     */
+    public function season( int $season )
+    {
+        $this->season = $season;
         return $this;
     }
 
@@ -138,8 +178,18 @@ class Item extends \Lukaswhite\FeedWriter\Entities\Rss\Item
 
         $this->addBlockElement( $item );
 
+        $this->addEpisodeTypeElement( $item );
+
         if ( $this->order ) {
             $item->appendChild( $this->createElement('itunes:order', $this->order ) );
+        }
+
+        if ( $this->episode ) {
+            $item->appendChild( $this->createElement('itunes:episode', $this->episode ) );
+        }
+
+        if ( $this->season ) {
+            $item->appendChild( $this->createElement('itunes:season', $this->season ) );
         }
 
         return $item;

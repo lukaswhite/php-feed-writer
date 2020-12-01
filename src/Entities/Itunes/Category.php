@@ -18,8 +18,9 @@ class Category extends \Lukaswhite\FeedWriter\Entities\General\Category
 
     /**
      * @param string ...$children
+     * @return self
      */
-    public function children(string ...$children)
+    public function children(string ...$children): self
     {
         $this->subCategories = $children;
         return $this;

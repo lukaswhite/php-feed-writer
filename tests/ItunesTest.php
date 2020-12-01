@@ -2,6 +2,7 @@
 
 namespace Lukaswhite\FeedWriter\Tests;
 
+use Lukaswhite\FeedWriter\Entities\Itunes\Channel;
 use Lukaswhite\FeedWriter\Itunes;
 use Lukaswhite\FeedWriter\RSS2;
 
@@ -24,6 +25,7 @@ class ItunesTest extends TestCase
             ->owner( 'John Doe', 'john.doe@example.com' )
             ->explicit( 'no' )
             ->copyright( '&#x2117; &amp; &#xA9; 2014 John Doe &amp; Family' )
+            ->type( Channel::EPISODIC )
             ->generator( 'Feed Writer' )
             ->ttl( 60 )
             ->lastBuildDate( new \DateTime( '2016-03-10 02:00' ) );
@@ -44,6 +46,9 @@ class ItunesTest extends TestCase
             ->pubDate( new \DateTime( '2016-03-08 12:00' ) )
             ->guid( 'http://example.com/podcasts/archive/aae20140615.m4a' )
             ->explicit( 'no' )
+            ->episodeType( 'full' )
+            ->episode( 1 )
+            ->season( 1 )
             ->addEnclosure( )
                 ->url( 'http://example.com/podcasts/everything/AllAboutEverythingEpisode3.m4a' )
                 ->length( 8727310 )
@@ -77,6 +82,8 @@ class ItunesTest extends TestCase
         $this->assertEquals( 'rss', $xml->documentElement->tagName );
 
         $doc = new \DOMDocument( );
+
+        //print $feed->toString( );
 
         $doc->loadXML( $feed->toString( ) );
         $xpath = new \DOMXPath($doc);
@@ -119,6 +126,10 @@ class ItunesTest extends TestCase
         $ownerEmails = $xpath->query( '/rss/channel/itunes:owner/itunes:email' );
         $this->assertEquals( 1, $ownerEmails->length );
         $this->assertEquals( 'john.doe@example.com', $ownerEmails[ 0 ]->textContent );
+
+        $types = $xpath->query( '/rss/channel/itunes:type' );
+        $this->assertEquals( 1, $types->length );
+        $this->assertEquals( 'episodic', $types[ 0 ]->textContent );
 
         $categories = $xpath->query( '/rss/channel/itunes:category' );
         $this->assertEquals( 2, $categories->length );
