@@ -28,7 +28,9 @@ class ItunesTest extends TestCase
             ->type( Channel::EPISODIC )
             ->generator( 'Feed Writer' )
             ->ttl( 60 )
-            ->lastBuildDate( new \DateTime( '2016-03-10 02:00' ) );
+            ->lastBuildDate( new \DateTime( '2016-03-10 02:00' ) )
+            ->addAtomLink('http://example.com/feed.rss');
+            //->addLinkToSelf('http://example.com/feed.rss');
 
         $channel->addCategory()
             ->term('Technology');
