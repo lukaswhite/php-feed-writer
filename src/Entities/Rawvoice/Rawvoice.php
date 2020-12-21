@@ -46,6 +46,16 @@ class Rawvoice
     protected $isHd = false;
 
     /**
+     * @var string
+     */
+    protected $donate;
+
+    /**
+     * @var string
+     */
+    protected $donateValue;
+
+    /**
      * The feed
      *
      * @var Feed
@@ -126,6 +136,18 @@ class Rawvoice
     }
 
     /**
+     * @param string $donate
+     * @param string $donateValue
+     * @return Rawvoice
+     */
+    public function donate(string $donate, string $donateValue = null): Rawvoice
+    {
+        $this->donate = $donate;
+        $this->donateValue = $donateValue;
+        return $this;
+    }
+
+    /**
      * Add the GeoRSS tags to the specified element
      *
      * @param \DOMElement $el
@@ -149,6 +171,10 @@ class Rawvoice
         }
         if($this->isHd) {
             $el->appendChild( $this->createElement('rawvoice:isHd', 'yes'));
+        }
+        if($this->donate) {
+            $donate = $el->appendChild( $this->createElement('rawvoice:donate', $this->donateValue));
+            $donate->setAttribute('href', $this->donate);
         }
     }
 

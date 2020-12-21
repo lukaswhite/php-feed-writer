@@ -172,7 +172,11 @@ class RawvoiceTest extends TestCase
 
         $channel->rawvoice()
             ->location('Cleveland, OH')
-            ->frequency('Weekly');
+            ->frequency('Weekly')
+            ->donate(
+                'http://example.com/feed/podcast/donate',
+                'Support Podcast Name'
+            );
             //->poster('http://www.example.com/path/to/poster.png')
             //->isHd();
 
@@ -183,7 +187,7 @@ class RawvoiceTest extends TestCase
 
         $doc = new \DOMDocument( );
 
-        print $feed->toString( );
+        //print $feed->toString( );
 
         $doc->loadXML( $feed->toString( ) );
         $xpath = new \DOMXPath($doc);
@@ -195,6 +199,16 @@ class RawvoiceTest extends TestCase
         $frequencies = $xpath->query( '/rss/channel/rawvoice:frequency' );
         $this->assertEquals( 1, $frequencies->length );
         $this->assertEquals('Weekly', (string)$frequencies[0]->textContent);
+
+        $donates = $xpath->query( '/rss/channel/rawvoice:donate' );
+        $this->assertEquals( 1, $donates->length );
+        $this->assertEquals('Support Podcast Name', (string)$donates[0]->textContent);
+
+        $donatesAttributes = $this->getAttributesOfElementNamed( 'rawvoice:donate', $feed->toString( ) );
+
+        $this->assertArrayHasKey( 'href', $donatesAttributes );
+        $this->assertEquals('http://example.com/feed/podcast/donate', $donatesAttributes['href']);
+
 
         /**
         $posters = $xpath->query( '/rss/channel/rawvoice:poster' );
