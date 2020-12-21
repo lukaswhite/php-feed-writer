@@ -5,10 +5,10 @@ namespace Lukaswhite\FeedWriter\Entities\Rawvoice;
 use Lukaswhite\FeedWriter\Entities\Entity;
 
 /**
- * Class Link
+ * Class Livestream
  * @package Lukaswhite\FeedWriter\Entities\Rawvoice
  */
-class Livestream extends Entity
+abstract class Livestream extends Entity
 {
     /**
      * @var \DateTime
@@ -21,46 +21,19 @@ class Livestream extends Entity
     protected $duration;
 
     /**
-     * The tag name of the link; e.g. link, atom:link
-     *
-     * @var string
-     */
-    protected $tagName = 'link';
-
-    /**
-     * The URL
-     *
      * @var string
      */
     protected $url;
 
     /**
-     * The rel; e.g. self
-     *
-     * @var string
-     */
-    protected $rel;
-
-    /**
-     * The type; e.g. application/rss+xml
-     *
      * @var string
      */
     protected $type;
 
     /**
-     * The language of the referenced resource (i.e. the hreflang attribute)
-     *
-     * @var string
+     * @return string
      */
-    protected $language;
-
-    /**
-     * The length of the resource, in bytes
-     *
-     * @var int
-     */
-    protected $length;
+    abstract protected function getTagName(): string;
 
     /**
      * Create a DOM element that represents this entity.
@@ -69,90 +42,61 @@ class Livestream extends Entity
      */
     public function element( ) : \DOMElement
     {
-        $el = $this->feed->getDocument( )->createElement( $this->tagName );
-        $el->setAttribute( 'href', $this->url );
-        if ( $this->rel ) {
-            $el->setAttribute( 'rel', $this->rel );
+        $el = $this->feed->getDocument( )->createElement(
+            sprintf('rawvoice:%s', $this->getTagName() ),
+            $this->url
+        );
+
+        if ( $this->schedule ) {
+            $el->setAttribute( 'schedule', $this->schedule->format( DATE_RSS ) );
+        }
+        if ( $this->duration ) {
+            $el->setAttribute( 'duration', $this->duration );
         }
         if ( $this->type ) {
             $el->setAttribute( 'type', $this->type );
-        }
-        if ( $this->language ) {
-            $el->setAttribute( 'hreflang', $this->language );
-        }
-        if ( $this->length ) {
-            $el->setAttribute( 'length', $this->length );
         }
         return $el;
     }
 
     /**
-     * Set the name of the link; e.g. atom:link
-     *
-     * @param string $tagName
-     * @return Link
+     * @param \DateTime $schedule
+     * @return Livestream
      */
-    public function tagName( string $tagName ) : self
+    public function schedule(\DateTime $schedule): Livestream
     {
-        $this->tagName = $tagName;
+        $this->schedule = $schedule;
         return $this;
     }
 
     /**
-     * Set the link's URL
-     *
-     * @param string $url
-     * @return Link
+     * @param int $duration
+     * @return Livestream
      */
-    public function url( string $url ) : self
+    public function duration(int $duration): Livestream
+    {
+        $this->duration = $duration;
+        return $this;
+    }
+
+    /**
+     * @param string $url
+     * @return Livestream
+     */
+    public function url(string $url): Livestream
     {
         $this->url = $url;
         return $this;
     }
 
     /**
-     * Set the rel attribute of the link
-     *
-     * @param string $rel
-     * @return Link
-     */
-    public function rel( string $rel ) : self
-    {
-        $this->rel = $rel;
-        return $this;
-    }
-
-    /**
-     * Set the (MIME) type
-     *
      * @param string $type
-     * @return Link
+     * @return Livestream
      */
-    public function type( string $type ) : self
+    public function type(string $type): Livestream
     {
         $this->type = $type;
         return $this;
     }
-
-    /**
-     * @param string $language
-     * @return Link
-     */
-    public function language( string $language ) : self
-    {
-        $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * @param int $length
-     * @return Link
-     */
-    public function length( int $length ) : self
-    {
-        $this->length = $length;
-        return $this;
-    }
-
 
 }
