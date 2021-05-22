@@ -6,6 +6,8 @@ use Lukaswhite\FeedWriter\Entities\Media\Credit;
 use Lukaswhite\FeedWriter\Entities\Media\Media;
 use Lukaswhite\FeedWriter\Entities\Media\Price;
 use Lukaswhite\FeedWriter\Entities\Media\Status;
+use Lukaswhite\FeedWriter\Exceptions\InvalidExpressionException;
+use Lukaswhite\FeedWriter\Exceptions\InvalidMediumException;
 use Lukaswhite\FeedWriter\RSS2;
 use Lukaswhite\RSSWriter\Feed;
 
@@ -712,6 +714,7 @@ class MediaTest extends TestCase
      */
     public function testThatAnExceptionIsThrownIfMediumIsInvalid( )
     {
+        $this->expectException(InvalidMediumException::class);
         $media = new \Lukaswhite\FeedWriter\Entities\Media\Media( new RSS2( ) );
         $media->medium( 'dance' );
     }
@@ -721,6 +724,7 @@ class MediaTest extends TestCase
      */
     public function testThatAnExceptionIsThrownIfExpressionIsInvalid( )
     {
+        $this->expectException(InvalidExpressionException::class);
         $media = new \Lukaswhite\FeedWriter\Entities\Media\Media( new RSS2( ) );
         $media->expression( 'e=mc2' );
     }

@@ -1,38 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="./vendor/autoload.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="true"
-         syntaxCheck="false">
-
+>
     <testsuites>
-        <testsuite name="Laravel Business Hours Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
-
-    <filter>
-        <blacklist>
-            <directory>vendor</directory>
-        </blacklist>
-    </filter>
-
-    <logging>
-        <log type="coverage-html" target="./log/codeCoverage" charset="UTF-8"
-             yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"
-             showUncoveredFiles="false" />
-        <!-- <log type="testdox-html" target="./log/testdox.html" /> -->
-    </logging>
-
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </coverage>
 </phpunit>
