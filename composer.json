@@ -1,7 +1,7 @@
 {
     "name": "lukaswhite/php-feed-writer",
     "description": "A PHP library for writing feeds; e.g. RSS",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
