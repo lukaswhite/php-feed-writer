@@ -22,7 +22,11 @@ trait CreatesDOMElements
     protected function createElement( string $name, $value = null, array $attributes = [ ], $encode = false ) : \DOMElement
     {
         if ( ! $encode ) {
-            $el = $this->feed->getDocument( )->createElement( $name, $value );
+            if($value){
+                $el = $this->feed->getDocument( )->createElement( $name, $value );
+            } else {
+                $el = $this->feed->getDocument( )->createElement($name);
+            }
         } else {
             $el = $this->feed->getDocument( )->createElement( $name );
             $el->appendChild( $this->feed->getDocument( )->createCDATASection( $value ) );

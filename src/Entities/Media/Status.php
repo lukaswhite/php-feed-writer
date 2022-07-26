@@ -64,10 +64,7 @@ class Status extends Entity
      */
     public function element( ) : \DOMElement
     {
-        $status = $this->feed->getDocument( )->createElement(
-            'media:status',
-            null
-        );
+        $status = $this->feed->getDocument( )->createElement('media:status');
 
         $status->setAttribute( 'state', $this->state );
         $status->setAttribute( 'reason', $this->reason );

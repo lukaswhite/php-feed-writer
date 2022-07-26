@@ -509,7 +509,7 @@ Can you see this?')
 
         $this->assertEquals(1, $xpath->query('/rss/channel/item/wp:comment/wp:comment_approved')->length);
         $this->assertEquals(
-            0,
+            '',
             $xpath->query('/rss/channel/item/wp:comment/wp:comment_approved')[0]->textContent
         );
     }
